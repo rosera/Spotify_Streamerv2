@@ -30,6 +30,7 @@ public class MainActivityFragment extends Fragment {
 
         // Create some dummy data for the ListView.  Here's a sample weekly forecast
         String[] strArtistNames = {
+                "Artist 0",
                 "Artist 1",
                 "Artist 2",
                 "Artist 3",
@@ -39,21 +40,37 @@ public class MainActivityFragment extends Fragment {
                 "Artist 7"
         };
 
-//        Integer[] intArtistResource = {R.drawable.linux_ad}
+        Integer[] intArtistResource = {
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher,
+                R.drawable.ic_launcher
+        };
 
         // Create a temporary list for the artist information
-        List<String> artistInformation = new ArrayList<String>(Arrays.asList(strArtistNames));
-
+        List<String> artistNameList = new ArrayList<String>(Arrays.asList(strArtistNames));
+        List<Integer> artistImageResource = new ArrayList<Integer>(Arrays.asList(intArtistResource));
 
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
+//        mSpotifyArtistAdapter =
+//                new ArrayAdapter<String>(
+//                        getActivity(), // The current context (this activity)
+//                        R.layout.list_item_spotify, // The name of the layout ID.
+//                        R.id.textViewArtist, // The ID of the textview to populate.
+//                        artistNameList);
+
+
         mSpotifyArtistAdapter =
-                new ArrayAdapter<String>(
-                        getActivity(), // The current context (this activity)
-                        R.layout.list_item_spotify, // The name of the layout ID.
-                        R.id.textViewArtist, // The ID of the textview to populate.
-                        artistInformation);
+                new CustomListAdapter(
+                        getActivity(),
+                        artistNameList,
+                        artistImageResource);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
