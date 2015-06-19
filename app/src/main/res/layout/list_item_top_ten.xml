@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:gravity="center_vertical"
+    android:id="@+id/list_item_top_ten_artist">
+
+    <ImageView
+        android:layout_width="@dimen/SpotifyStreamImageWidth"
+        android:layout_height="@dimen/SpotifyStreamImageHeight"
+        android:id="@+id/imageViewTopTenArtist"
+        android:contentDescription="@string/spotify_streamer_artist_image"
+        android:layout_margin="@dimen/SpotifyStreamImageMarginAll" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spotify_streamer_artist_track"
+            android:id="@+id/textViewTopTenArtist"
+            android:paddingTop="@dimen/SpotifyStreamTextViewPaddingTop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spotify_streamer_artist_album"
+            android:id="@+id/textViewTopTenAlbum" />
+    </LinearLayout>
+
+</LinearLayout>
