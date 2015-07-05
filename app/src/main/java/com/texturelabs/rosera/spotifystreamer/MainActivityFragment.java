@@ -44,12 +44,12 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG_NAME = MainActivityFragment.class.getSimpleName();
 
     ArrayAdapter<SpotifyContent> mSpotifyArtistAdapter;
-    int enteredTextLength = 0;
-    SpotifyApi api;
-    SpotifyService spotify;
-    ArtistsPager artistsPager;
-    ArtistsPager spotifyArtistResults;
-    SpotifyContent[]  spotifyContent;
+//    int enteredTextLength = 0;
+//    SpotifyApi api;
+//    SpotifyService spotify;
+//    ArtistsPager artistsPager;
+//    ArtistsPager spotifyArtistResults;
+//    SpotifyContent[]  spotifyContent;
     ArrayList<SpotifyContent> mSpotifyArtist;
     ListView listView;
     List<Artist> artists;
@@ -105,14 +105,14 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 
-        if (spotifyContent != null) {
-            // Implement a customer adapter to display imageView & TextView with a listView.
-            mSpotifyArtistAdapter =
-                    new CustomListAdapter(
-                            getActivity(),
-                            mSpotifyArtist);
-
-        }
+//        if (spotifyContent != null) {
+//            // Implement a customer adapter to display imageView & TextView with a listView.
+//            mSpotifyArtistAdapter =
+//                    new CustomListAdapter(
+//                            getActivity(),
+//                            mSpotifyArtist);
+//
+//        }
 
         // Get a reference to the ListView, and attach this adapter to it.
         listView = (ListView) rootView.findViewById(R.id.listViewArtists);
