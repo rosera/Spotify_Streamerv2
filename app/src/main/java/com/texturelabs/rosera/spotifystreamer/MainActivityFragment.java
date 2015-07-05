@@ -157,23 +157,22 @@ public class MainActivityFragment extends Fragment {
             public boolean onEditorAction(TextView Artist, int action, KeyEvent keyEvent) {
                 switch (action) {
                     case EditorInfo.IME_ACTION_DONE:
-                        // Selected enter from the keyboard
-                        Context context = getActivity();
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, "onTextChanged:Execute Spotify Web API call", duration);
-                        toast.show();
+//                        // Selected enter from the keyboard
+//                        Context context = getActivity();
+//                        int duration = Toast.LENGTH_SHORT;
+//
+//                        Toast toast = Toast.makeText(context, "onTextChanged:Execute Spotify Web API call", duration);
+//                        toast.show();
 //
 //
-////                    // Clear the listView
-                        if (mSpotifyArtistAdapter !=null)
-                            mSpotifyArtistAdapter.clear();
+                        if (searchArtist.getText().length() > 0) {
+                            // Clear the listView
+                            if (mSpotifyArtistAdapter !=null)
+                                mSpotifyArtistAdapter.clear();
 
-                        // Execute the artist search
-                        new ArtistAsyncTask().execute(searchArtist.getText().toString());
-
-                        //
-//                        populateArtistListView();
+                            // Execute the artist search
+                            new ArtistAsyncTask().execute(searchArtist.getText().toString());
+                        }
                         break;
 
                     default:
@@ -286,6 +285,8 @@ public class MainActivityFragment extends Fragment {
 
                 Toast toast = Toast.makeText(context, "onPostExecute: No artists found", duration);
                 toast.show();
+
+                mSpotifyArtist.clear();
             }else {
 
                 for (Artist item: result.artists.items) {
