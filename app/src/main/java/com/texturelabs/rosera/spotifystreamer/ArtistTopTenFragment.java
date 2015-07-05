@@ -14,25 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 
-///**
-// * A simple {@link Fragment} subclass.
-// * Activities that contain this fragment must implement the
-// * {@link ArtistTopTenFragment.OnFragmentInteractionListener} interface
-// * to handle interaction events.
-// * Use the {@link ArtistTopTenFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
+
 public class ArtistTopTenFragment extends Fragment {
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-//
 //    private OnFragmentInteractionListener mListener;
     ArrayAdapter<String> mSpotifyTrackAdapter;
 
@@ -72,6 +59,13 @@ public class ArtistTopTenFragment extends Fragment {
      *
      */
 
+    public ArtistTopTenFragment() {
+    }
+
+    /*
+     *
+     */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,6 +95,10 @@ public class ArtistTopTenFragment extends Fragment {
 
         // Change the title - todo (add string resource)
         getActivity().setTitle("Top 10 Tracks");
+
+        SpotifyApi api = new SpotifyApi();
+        SpotifyService spotify = api.getService();
+        ArtistsPager results = spotify.searchArtists("coldplay");
 
 //        // Create a temporary list for the artist information
 //        List<String> trackNameList = new ArrayList<String>(Arrays.asList(strTrackNames));

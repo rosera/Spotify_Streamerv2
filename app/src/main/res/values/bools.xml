@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="spotify_streamer_search_iconified_false">false</bool>
+</resources>
