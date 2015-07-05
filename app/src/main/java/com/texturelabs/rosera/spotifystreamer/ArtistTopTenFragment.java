@@ -104,22 +104,22 @@ public class ArtistTopTenFragment extends Fragment {
 //        List<String> trackNameList = new ArrayList<String>(Arrays.asList(strTrackNames));
 //        List<Integer> trackImageResource = new ArrayList<Integer>(Arrays.asList(intTrackResource));
 
-        // Implement a customer adapter to display imageView & TextView with a listView.
-        mSpotifyTrackAdapter =
-                new CustomListAdapter(
-                        getActivity(),
-                        strTrackNames,
-                        intTrackResource,
-                        R.layout.list_item_top_ten,
-                        R.id.textViewTopTenArtist,
-                        R.id.imageViewTopTenArtist
-                );
-        // inflate the track list view for top ten
+//        // Implement a customer adapter to display imageView & TextView with a listView.
+//        mSpotifyTrackAdapter =
+//                new CustomListAdapter(
+//                        getActivity(),
+//                        strTrackNames,
+//                        intTrackResource,
+//                        R.layout.list_item_top_ten,
+//                        R.id.textViewTopTenArtist,
+//                        R.id.imageViewTopTenArtist
+//                );
+//        // inflate the track list view for top ten
         View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
-
-        // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
-        listView.setAdapter(mSpotifyTrackAdapter);
+//
+//        // Get a reference to the ListView, and attach this adapter to it.
+//        ListView listView = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
+//        listView.setAdapter(mSpotifyTrackAdapter);
 
 
         // Inflate the layout for this fragment
