@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:gravity="center_vertical"
+    android:id="@+id/list_item_spotify_artist">
+
+    <ImageView
+        android:layout_width="@dimen/SpotifyStreamImageWidth"
+        android:layout_height="@dimen/SpotifyStreamImageHeight"
+        android:src="@drawable/ic_launcher"
+        android:id="@+id/imageViewArtist"
+        android:contentDescription="@string/spotify_stream_imageview_artist"
+        android:layout_margin="@dimen/SpotifyStreamImageMarginAll" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/spotify_streamer_artist_tagline"
+        android:id="@+id/textViewArtist"
+        android:paddingTop="@dimen/SpotifyStreamTextViewPaddingTop" />
+</LinearLayout>

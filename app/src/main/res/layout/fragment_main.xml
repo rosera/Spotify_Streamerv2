@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context=".MainActivityFragment"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextSearchArtist"
+        android:queryHint="@string/spotify_streamer_artist_filter"
+        android:iconifiedByDefault="@bool/spotify_streamer_search_iconified_false"
+        android:inputType="text"
+        android:imeOptions="actionDone"
+        android:hint="@string/spotify_streamer_artist_filter" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/listViewArtists"
+        tools:text="Placeholder text listview"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="right|center_vertical" />
+
+
+</LinearLayout>
