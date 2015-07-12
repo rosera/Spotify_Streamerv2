@@ -11,25 +11,28 @@
         android:layout_height="@dimen/SpotifyStreamImageHeight"
         android:id="@+id/imageViewTopTenArtist"
         android:contentDescription="@string/spotify_streamer_artist_image"
-        android:layout_margin="@dimen/SpotifyStreamImageMarginAll" />
+        android:layout_margin="@dimen/SpotifyStreamImageMarginAll"
+        android:visibility="visible" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="@string/spotify_streamer_artist_track"
             android:id="@+id/textViewTopTenArtist"
-            android:paddingTop="@dimen/SpotifyStreamTextViewPaddingTop" />
+            android:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="@string/spotify_streamer_artist_album"
-            android:id="@+id/textViewTopTenAlbum" />
+            android:id="@+id/textViewTopTenAlbum"
+            android:visibility="visible" />
     </LinearLayout>
 
 </LinearLayout>

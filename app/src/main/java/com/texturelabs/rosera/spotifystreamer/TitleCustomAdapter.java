@@ -1,7 +1,6 @@
 package com.texturelabs.rosera.spotifystreamer;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,27 +8,23 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.okhttp.internal.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by rosera on 06/06/15.
- * reference: http://www.vogella.com/tutorials/AndroidListView/article.html#adapterown
- * 3. Custom adapter implementations
+ * Created by rosera on 12/07/15.
  */
-public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
+public class TitleCustomAdapter extends ArrayAdapter<SpotifyContent> {
     private static final String TAG_NAME = CustomListAdapter.class.getSimpleName();
-    Activity                    _ObjectContext;
-    ArrayList<SpotifyContent>   _spotifyContent;
+    Activity _ObjectContext;
+    ArrayList<SpotifyContent> _spotifyContent;
 
     /**
      * Name: CustomListAdapter
      * First custom list adapter - whoa!
      */
-    public CustomListAdapter (Activity context,
+    public TitleCustomAdapter(Activity context,
                               ArrayList<SpotifyContent> spotifyContents) {
 
         // Compiler: Call to super must be the first statement in constructor
@@ -100,26 +95,25 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
                     viewHolder = new ViewHolder();
                     viewHolder.artistTitle = (TextView) view.findViewById(R.id.textViewTopTenArtist);
                     viewHolder.artistSubTitle = (TextView) view.findViewById(R.id.textViewTopTenAlbum);
-                    viewHolder.artistImage = (ImageView) view.findViewById(R.id.imageViewTopTenArtist);
-                    view.setTag(viewHolder);
+                    viewHolder.artistImage = (ImageView) view.findViewById(R.id.imageViewArtist);
                 } else {
                     viewHolder = (ViewHolder) view.getTag();
                 }
-                                    // Render text and image
-                    if (spotifyContent._mainTitle != null)
-                        viewHolder.artistTitle.setText(spotifyContent._mainTitle);
+                // Render text and image
+                if (spotifyContent._mainTitle != null)
+                    viewHolder.artistTitle.setText(spotifyContent._mainTitle);
 
-                    if (spotifyContent._albumTitle != null)
-                        viewHolder.artistSubTitle.setText(spotifyContent._albumTitle);
+                if (spotifyContent._albumTitle != null)
+                    viewHolder.artistSubTitle.setText(spotifyContent._albumTitle);
 
-                    // Apply image or add stock image if URI not entered
-                    if (spotifyContent._imageURI.length() > 0) {
-                        Picasso.with(_ObjectContext)
-                                .load(spotifyContent._imageURI)
-                                .into(viewHolder.artistImage);
-                    } else {
-                        viewHolder.artistImage.setImageResource(R.drawable.blank_cd);
-                    }
+                // Apply image or add stock image if URI not entered
+                if (spotifyContent._imageURI.length() > 0) {
+                    Picasso.with(_ObjectContext)
+                            .load(spotifyContent._imageURI)
+                            .into(viewHolder.artistImage);
+                } else {
+                    viewHolder.artistImage.setImageResource(R.drawable.blank_cd);
+                }
                 break;
             default:
                 break;
@@ -187,5 +181,6 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
         TextView    artistSubTitle;
         ImageView   artistImage;
     }
+
 
 }
