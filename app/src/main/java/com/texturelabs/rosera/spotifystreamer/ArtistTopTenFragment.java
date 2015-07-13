@@ -71,15 +71,16 @@ public class ArtistTopTenFragment extends Fragment {
                 populateTrackListView();
         }
 
+        // Comment out today
         // Try and kept the fragment alive
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("Tracks", mSpotifyTracks);
-        super.onSaveInstanceState(outState);
-    }
+//  Comment today
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        outState.putParcelableArrayList("Tracks", mSpotifyTracks);
+//        super.onSaveInstanceState(outState);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -218,8 +219,15 @@ public class ArtistTopTenFragment extends Fragment {
                 mSpotifyTracks.add(newTrack);
             }
 
-            // Update the listView
-            populateTrackListView();
+            if (mSpotifyTracks.size() == 0) {
+                Context context = getActivity();
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, "onPostExecute: No tracks found for " + spotifyArtist.toString(), duration);
+                toast.show();
+            }
+            else
+                populateTrackListView();                // Update the listView
         }
     }
 }

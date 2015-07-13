@@ -40,10 +40,10 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG_NAME = MainActivityFragment.class.getSimpleName();
     private static final int TAG_ARTIST = 1;
 
-    private ArrayAdapter<SpotifyContent> mSpotifyArtistAdapter;
-    private ArrayList<SpotifyContent> mSpotifyArtist;
-    ListView listView;
-    List<Artist> artists;
+    private ArrayAdapter<SpotifyContent>    mSpotifyArtistAdapter;
+    private ArrayList<SpotifyContent>       mSpotifyArtist;
+    private static ListView listView;
+    private List<Artist> artists;
 
     /**
      * Name: MainActivityFragment
@@ -67,15 +67,14 @@ public class MainActivityFragment extends Fragment {
 
         // Grab parcelable information
         if (savedInstanceState == null || !savedInstanceState.containsKey("Artist")) {
-            mSpotifyArtist = new ArrayList<>();
+            mSpotifyArtist = new ArrayList<SpotifyContent>();
         }
         else {
             mSpotifyArtist = savedInstanceState.getParcelableArrayList("Artist");
             populateArtistListView();
         }
 
-//        // Try and kept the fragment alive
-        setRetainInstance(true);
+
     }
 
     @Override
@@ -83,6 +82,7 @@ public class MainActivityFragment extends Fragment {
         outState.putParcelableArrayList("Artist", mSpotifyArtist);
         super.onSaveInstanceState(outState);
     }
+
 
     /**
      * Name: onCreateView
@@ -100,6 +100,11 @@ public class MainActivityFragment extends Fragment {
 
         // Get a reference to the ListView, and attach this adapter to it.
         listView = (ListView) rootView.findViewById(R.id.listViewArtists);
+
+        // uncomment today - comment out in populate method
+//        mSpotifyArtistAdapter =
+//                new CustomListAdapter(this.getActivity(),
+//                        mSpotifyArtist);
 //        listView.setAdapter(mSpotifyArtistAdapter);
 
         // Add click behaviour for the title artist listview
@@ -111,10 +116,10 @@ public class MainActivityFragment extends Fragment {
 //                final String strArtist = (String) adapterView.getItemAtPosition(position);
                 SpotifyContent artistContent = (SpotifyContent) adapterView.getItemAtPosition(position);
 
-                // Store fragment data on the stack
-                getFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .commit();
+//                // Store fragment data on the stack
+//                getFragmentManager().beginTransaction()
+//                        .addToBackStack(null)
+//                        .commit();
 
                 /**
                  * Code snippet: Explicit intent - ArtistActivity
@@ -149,7 +154,7 @@ public class MainActivityFragment extends Fragment {
                     case EditorInfo.IME_ACTION_DONE:
                         if (searchArtist.getText().length() > 0) {
                             // Clear existing artist information
-                            mSpotifyArtist.clear();
+//                            mSpotifyArtist.clear();
 
                             // Execute the artist search
                             ArtistAsyncTask titleTask = new ArtistAsyncTask();
@@ -181,6 +186,8 @@ public class MainActivityFragment extends Fragment {
                 new CustomListAdapter(this.getActivity(),
                         mSpotifyArtist);
 
+
+        // Error - Today
         // Get a reference to the ListView, and attach this adapter to it.
         listView.setAdapter(mSpotifyArtistAdapter);
         mSpotifyArtistAdapter.notifyDataSetChanged();

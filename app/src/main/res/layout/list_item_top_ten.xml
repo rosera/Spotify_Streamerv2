@@ -22,17 +22,20 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/spotify_streamer_artist_track"
             android:id="@+id/textViewTopTenArtist"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/SpotifyStreamTextViewPaddingTop"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/spotify_streamer_artist_album"
             android:id="@+id/textViewTopTenAlbum"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/SpotifyStreamTextViewPaddingTop" />
     </LinearLayout>
 
 </LinearLayout>

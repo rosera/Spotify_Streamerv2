@@ -105,21 +105,22 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
                 } else {
                     viewHolder = (ViewHolder) view.getTag();
                 }
-                                    // Render text and image
-                    if (spotifyContent._mainTitle != null)
-                        viewHolder.artistTitle.setText(spotifyContent._mainTitle);
 
-                    if (spotifyContent._albumTitle != null)
-                        viewHolder.artistSubTitle.setText(spotifyContent._albumTitle);
+                // Render text and image
+                if (spotifyContent._mainTitle != null)
+                    viewHolder.artistTitle.setText(spotifyContent._mainTitle);
 
-                    // Apply image or add stock image if URI not entered
-                    if (spotifyContent._imageURI.length() > 0) {
-                        Picasso.with(_ObjectContext)
-                                .load(spotifyContent._imageURI)
-                                .into(viewHolder.artistImage);
-                    } else {
-                        viewHolder.artistImage.setImageResource(R.drawable.blank_cd);
-                    }
+                if (spotifyContent._albumTitle != null)
+                    viewHolder.artistSubTitle.setText(spotifyContent._albumTitle);
+
+                // Apply image or add stock image if URI not entered
+                if (spotifyContent._imageURI.length() > 0) {
+                    Picasso.with(_ObjectContext)
+                            .load(spotifyContent._imageURI)
+                            .into(viewHolder.artistImage);
+                } else {
+                    viewHolder.artistImage.setImageResource(R.drawable.blank_cd);
+                }
                 break;
             default:
                 break;
