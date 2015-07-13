@@ -7,12 +7,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class ArtistActivity extends AppCompatActivity {
-
+    private static final String TAG_NAME = ArtistActivity.class.getSimpleName();
     private ArtistTopTenFragment _fragmentTitle;
     private final  String TAG_FRAGMENT = "TitleFragment";
 
@@ -50,7 +52,12 @@ public class ArtistActivity extends AppCompatActivity {
 
             // Amend the Fragment title
             android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-            actionBar.setSubtitle(spotifyArtist);
+            try {
+                actionBar.setSubtitle(spotifyArtist);
+            }
+            catch (NullPointerException e){
+                Log.i(TAG_NAME, "Exception:" + e.getMessage());
+            }
         }
     }
 
@@ -73,16 +80,33 @@ public class ArtistActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // *********************************** Not working!!!
+
     @Override
-    public void onBackPressed() {
-        // Catch back action and pops from backstack
-        // (if you called previously to addToBackStack() in your transaction)
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-//            getSupportFragmentManager().popBackStack();
-            this.finish();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                this.finish();
+            }
+            else
+                getSupportFragmentManager().popBackStack();
         }
-        // Default action on back pressed
-        else
-            getSupportFragmentManager().popBackStack();
+        return false;
     }
+    // ********************************** Not working!!!
+
+//
+//
+//    @Override
+//    public void onBackPressed() {
+//        // Catch back action and pops from backstack
+//        // (if you called previously to addToBackStack() in your transaction)
+//        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+////            getSupportFragmentManager().popBackStack();
+//            this.finish();
+//        }
+//        // Default action on back pressed
+//        else
+//            getSupportFragmentManager().popBackStack();
+//    }
 }

@@ -67,7 +67,7 @@ public class MainActivityFragment extends Fragment {
 
         // Grab parcelable information
         if (savedInstanceState == null || !savedInstanceState.containsKey("Artist")) {
-            mSpotifyArtist = new ArrayList<SpotifyContent>();
+            mSpotifyArtist = new ArrayList<>();
         }
         else {
             mSpotifyArtist = savedInstanceState.getParcelableArrayList("Artist");
@@ -100,7 +100,7 @@ public class MainActivityFragment extends Fragment {
 
         // Get a reference to the ListView, and attach this adapter to it.
         listView = (ListView) rootView.findViewById(R.id.listViewArtists);
-        listView.setAdapter(mSpotifyArtistAdapter);
+//        listView.setAdapter(mSpotifyArtistAdapter);
 
         // Add click behaviour for the title artist listview
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,6 +132,7 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+
         /**
          * Interesting aside:
          * Cant use setOnKeyListener as this only works for hardware keys.
@@ -147,9 +148,8 @@ public class MainActivityFragment extends Fragment {
                 switch (action) {
                     case EditorInfo.IME_ACTION_DONE:
                         if (searchArtist.getText().length() > 0) {
-                            // Clear the listView
-                            if (mSpotifyArtistAdapter != null)
-                                mSpotifyArtistAdapter.clear();
+                            // Clear existing artist information
+                            mSpotifyArtist.clear();
 
                             // Execute the artist search
                             ArtistAsyncTask titleTask = new ArtistAsyncTask();
@@ -177,16 +177,13 @@ public class MainActivityFragment extends Fragment {
      */
 
     public void populateArtistListView() {
-        if (mSpotifyArtistAdapter != null)
-            mSpotifyArtistAdapter.clear();
-
         mSpotifyArtistAdapter =
                 new CustomListAdapter(this.getActivity(),
                         mSpotifyArtist);
 
         // Get a reference to the ListView, and attach this adapter to it.
         listView.setAdapter(mSpotifyArtistAdapter);
-//        mSpotifyArtistAdapter.notifyDataSetChanged();
+        mSpotifyArtistAdapter.notifyDataSetChanged();
     }
 
 
@@ -221,6 +218,7 @@ public class MainActivityFragment extends Fragment {
             Log.i("Debug:", "Download complete: result");
 
             artists = result.artists.items;
+            mSpotifyArtist.clear();
 
             // Confirm results retrieved
             if (artists.size()==0) {
@@ -229,8 +227,6 @@ public class MainActivityFragment extends Fragment {
 
                 Toast toast = Toast.makeText(context, "onPostExecute: No artists found", duration);
                 toast.show();
-
-//                mSpotifyArtist.clear();
             }
             else {
                 for (Artist item: result.artists.items) {

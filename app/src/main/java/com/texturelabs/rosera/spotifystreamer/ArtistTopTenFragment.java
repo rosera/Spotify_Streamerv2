@@ -58,21 +58,21 @@ public class ArtistTopTenFragment extends Fragment {
 
         // Grab parcelable information
         if (savedInstanceState == null || !savedInstanceState.containsKey("Tracks")) {
-            this.mSpotifyTracks = new ArrayList<SpotifyContent>();
+            this.mSpotifyTracks = new ArrayList<>();
 
-            // Call spotify API
-            if (mSpotifyTracks != null) {
-                mSpotifyTracks.clear();
-
-            }
-          else {
+//            // Call spotify API
+//            if (mSpotifyTracks != null) {
+//                mSpotifyTracks.clear();
+//
+//            }
+        }
+        else {
                 mSpotifyTracks = savedInstanceState.getParcelableArrayList("Tracks");
                 populateTrackListView();
-            }
-
-            // Try and kept the fragment alive
-            setRetainInstance(true);
         }
+
+        // Try and kept the fragment alive
+        setRetainInstance(true);
     }
 
     @Override
