@@ -15,8 +15,8 @@ import android.view.MenuItem;
 
 public class ArtistActivity extends AppCompatActivity {
     private static final String TAG_NAME = ArtistActivity.class.getSimpleName();
-    private ArtistTopTenFragment _fragmentTitle;
-    private final  String TAG_FRAGMENT = "TitleFragment";
+    //private ArtistTopTenFragment _fragmentTitle;
+    //private final  String TAG_FRAGMENT = "TitleFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,31 +33,28 @@ public class ArtistActivity extends AppCompatActivity {
 
             // Call the fragment for Top 10 Tracks
             if (savedInstanceState == null) {
+
+                ArtistTopTenFragment mFragment = new ArtistTopTenFragment();
+
+                // Try - mFragment.setArguments(getIntent().getExtras());
+                extras.putString("ID", spotifyID);
+                extras.putString("Artist", spotifyArtist);
+                mFragment.setArguments(extras);
+
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, new ArtistTopTenFragment(spotifyID, spotifyArtist))
+                        .add(R.id.container, mFragment)
 //                        .addToBackStack(null)
                         .commit();
-
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                _fragmentTitle = (ArtistTopTenFragment)fragmentManager.findFragmentByTag(TAG_FRAGMENT);
-//
-//                if (_fragmentTitle == null) {
-//                    _fragmentTitle = new ArtistTopTenFragment(spotifyID, spotifyArtist);
-//                    fragmentManager.beginTransaction()
-////                            .add(_fragmentTitle, TAG_FRAGMENT)
-//                            .addToBackStack(TAG_FRAGMENT)
-//                            .commit();
-//                }
             }
 
             // Amend the Fragment title
-            android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-            try {
-                actionBar.setSubtitle(spotifyArtist);
-            }
-            catch (NullPointerException e){
-                Log.i(TAG_NAME, "Exception:" + e.getMessage());
-            }
+//            android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+//            try {
+//                actionBar.setSubtitle(spotifyArtist);
+//            }
+//            catch (NullPointerException e){
+//                Log.i(TAG_NAME, "Exception:" + e.getMessage());
+//            }
         }
     }
 
@@ -76,37 +73,43 @@ public class ArtistActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
+//        else if (id == android.R.id.home) {
+//            // Thanks Stackoverflow !!
+//            Intent intent = NavUtils.getParentActivityIntent(this);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            NavUtils.navigateUpTo(this, intent);
+//            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+//                getSupportFragmentManager().popBackStack();
+//            }
+//            else {
+//                super.onBackPressed();
+//            }
+//        }
         return super.onOptionsItemSelected(item);
     }
 
     // *********************************** Not working!!!
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                this.finish();
-            }
-            else
-                getSupportFragmentManager().popBackStack();
-        }
-        return false;
-    }
-    // ********************************** Not working!!!
-
-//
-//
 //    @Override
-//    public void onBackPressed() {
-//        // Catch back action and pops from backstack
-//        // (if you called previously to addToBackStack() in your transaction)
-//        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-////            getSupportFragmentManager().popBackStack();
-//            this.finish();
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+//                this.finish();
+//            }
+//            else
+//                getSupportFragmentManager().popBackStack();
 //        }
-//        // Default action on back pressed
-//        else
-//            getSupportFragmentManager().popBackStack();
+//        return false;
 //    }
+//    // ********************************** Not working!!!
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
 }

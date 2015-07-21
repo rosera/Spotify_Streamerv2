@@ -18,17 +18,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        _fragmentArtist = (MainActivityFragment)fragmentManager.findFragmentByTag(TAG_FRAGMENT);
-//
-//        if (_fragmentArtist == null) {
-//            _fragmentArtist = new MainActivityFragment();
-//            fragmentManager.beginTransaction()
-//                    .add(_fragmentArtist, TAG_FRAGMENT)
-//                    .addToBackStack(TAG_FRAGMENT)
-//                    .commit();
-//        }
     }
 
 
@@ -50,14 +39,11 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-//        else if (id == android.R.id.home) {
-//            // Thanks Stackoverflow !!
-//            Intent intent = NavUtils.getParentActivityIntent(this);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            NavUtils.navigateUpTo(this, intent);
-//        }
+
 
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

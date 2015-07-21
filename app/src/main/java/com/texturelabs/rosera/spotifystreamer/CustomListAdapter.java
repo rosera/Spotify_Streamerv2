@@ -25,6 +25,7 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
     Activity                    _ObjectContext;
     ArrayList<SpotifyContent>   _spotifyContent;
 
+
     /**
      * Name: CustomListAdapter
      * First custom list adapter - whoa!
@@ -67,7 +68,6 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
     public View getView(int position, View view, ViewGroup parent) {
 
         ViewHolder viewHolder     = null;
-//        ViewHolder titleViewHolder      = null;
         SpotifyContent  spotifyContent  = this._spotifyContent.get(position);
 
         switch(spotifyContent._Task) {
@@ -126,63 +126,16 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
                 break;
 
         }
-//        SpotifyContent spotifyContent = getItem(position);
-//        LayoutInflater inflater = _ObjectContext.getLayoutInflater();
-//        View rowView = null;
-//
-//        if (spotifyContent != null) {
-//
-//            switch (spotifyContent._Task) {
-//                case 1:
-//                    rowView = inflater.inflate(R.layout.list_item_spotify, parent, false);
-//                    TextView textViewArtist = (TextView) rowView.findViewById(R.id.textViewArtist);
-//                    ImageView imageViewArtist = (ImageView) rowView.findViewById(R.id.imageViewArtist);
-//
-//                    // Render text and image
-//                    textViewArtist.setText(spotifyContent._mainTitle);
-//
-//                    // Apply image or add stock image if URI not entered
-//                    if (spotifyContent._imageURI.length() > 0) {
-//                        Picasso.with(_ObjectContext)
-//                                .load(spotifyContent._imageURI)
-//                                .into(imageViewArtist);
-//                    } else {
-//                        imageViewArtist.setImageResource(R.drawable.blank_cd);
-//                    }
-//                    break;
-//
-//                case 2:
-//                    rowView = inflater.inflate(R.layout.list_item_top_ten, parent, false);
-//                    TextView textViewTitle1 = (TextView) rowView.findViewById(R.id.textViewTopTenArtist);
-//                    TextView textViewTitle2 = (TextView) rowView.findViewById(R.id.textViewTopTenAlbum);
-//                    ImageView imageViewArtist1 = (ImageView) rowView.findViewById(R.id.imageViewTopTenArtist);
-//
-//                    // Render text and image
-//                    if (spotifyContent._mainTitle != null)
-//                        textViewTitle1.setText(spotifyContent._mainTitle);
-//
-//                    if (spotifyContent._albumTitle != null)
-//                        textViewTitle2.setText(spotifyContent._albumTitle);
-//
-//                    // Apply image or add stock image if URI not entered
-//                    if (spotifyContent._imageURI.length() > 0) {
-//                        Picasso.with(_ObjectContext)
-//                                .load(spotifyContent._imageURI)
-//                                .into(imageViewArtist1);
-//                    } else {
-//                        imageViewArtist1.setImageResource(R.drawable.blank_cd);
-//                    }
-//                    break;
-//
-//                default:
-//                    break;
-//            }
-//        }
 
         // Return the rowView [image+text(s)] to insert into the ListView control
         return view;
     }
 
+
+    /**
+     * Name: ViewHolder
+     * More efficient content management for the getView routine
+     */
     private static class ViewHolder {
         TextView    artistTitle;
         TextView    artistSubTitle;

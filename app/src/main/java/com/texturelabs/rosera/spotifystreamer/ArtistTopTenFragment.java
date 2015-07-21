@@ -1,6 +1,8 @@
 package com.texturelabs.rosera.spotifystreamer;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -37,18 +40,25 @@ public class ArtistTopTenFragment extends Fragment {
     private ArrayList<SpotifyContent> mSpotifyTracks;
     String spotifyArtist;
     String spotifyID;
-    ListView listView;
+    ListView mListViewTitle;
+    boolean                     TitleParcelable = false;
 
     /**
      * Name: ArtistTopTenFragment
      * Pass the artist ID, needed for Spotify Web API
      */
 
-    public ArtistTopTenFragment(String ID, String artist) {
-        // Initialise memory for the Tracks Array List
-//        mSpotifyTracks = new ArrayList<SpotifyContent>();
-        this.spotifyArtist = artist;
-        this.spotifyID = ID;
+// Review: Never change the fragment signature
+//    public ArtistTopTenFragment(String ID, String artist) {
+//        // Initialise memory for the Tracks Array List
+////        mSpotifyTracks = new ArrayList<SpotifyContent>();
+//        this.spotifyArtist = artist;
+//        this.spotifyID = ID;
+//    }
+// Review: Never change the fragment signature
+
+
+    public ArtistTopTenFragment() {
     }
 
 
@@ -56,19 +66,18 @@ public class ArtistTopTenFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Grab parcelable information
         if (savedInstanceState == null || !savedInstanceState.containsKey("Tracks")) {
-            this.mSpotifyTracks = new ArrayList<>();
+//            this.mSpotifyTracks = new ArrayList<>();
 
-//            // Call spotify API
-//            if (mSpotifyTracks != null) {
-//                mSpotifyTracks.clear();
-//
-//            }
+            TitleParcelable = false;
         }
         else {
                 mSpotifyTracks = savedInstanceState.getParcelableArrayList("Tracks");
-                populateTrackListView();
+                TitleParcelable = true;
+
+                //populateTrackListView();
         }
 
         // Comment out today
@@ -76,27 +85,49 @@ public class ArtistTopTenFragment extends Fragment {
 //        setRetainInstance(true);
     }
 //  Comment today
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        outState.putParcelableArrayList("Tracks", mSpotifyTracks);
-//        super.onSaveInstanceState(outState);
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("Tracks", mSpotifyTracks);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+// Review: pass fragment arguments via Bundle
+        this.spotifyArtist = getArguments().getString("Artist");
+        this.spotifyID = getArguments().getString("ID");
+
+
+//        this.spotifyArtist = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
+//        this.spotifyID = getActivity().getIntent().getStringExtra(Intent.EXTRA_TITLE);
+// Review: pass fragment arguments via Bundle
+
         // Change the title - todo (add string resource)
+        // Amend the Fragment title
+        ActionBar actionBar = getActivity().getActionBar();
+        try {
+            actionBar.setSubtitle(spotifyArtist);
+        }
+        catch (NullPointerException e){
+            Log.i(TAG_NAME, "Exception:" + e.getMessage());
+        }
+
         getActivity().setTitle("Top 10 Tracks");
 
         View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        listView = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
-        //listView.setAdapter(mSpotifyTrackAdapter);
+        mListViewTitle = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
+
+        if (TitleParcelable == false)
+            this.mSpotifyTracks = new ArrayList<>();
+        mSpotifyTrackAdapter = new CustomListAdapter(getActivity(), mSpotifyTracks);
+        mListViewTitle.setAdapter(mSpotifyTrackAdapter);
 
         // Add click behaviour for the title artist listview
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
                 Context context = getActivity();
@@ -126,15 +157,14 @@ public class ArtistTopTenFragment extends Fragment {
         return rootView;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Initialise the list
-//        mSpotifyTracks.clear();
-
-        // Execute the artist search
-        new TracksAsyncTask().execute(spotifyID);
+        if (TitleParcelable == false)
+            // Execute the artist search
+            new TracksAsyncTask().execute(spotifyID);
     }
 
     /**
@@ -146,16 +176,13 @@ public class ArtistTopTenFragment extends Fragment {
      */
 
     public void populateTrackListView() {
-        if (mSpotifyTrackAdapter != null)
-            mSpotifyTrackAdapter.clear();
-
-        mSpotifyTrackAdapter =
-                new CustomListAdapter(this.getActivity(),
-                        mSpotifyTracks);
-
-        // Get a reference to the ListView, and attach this adapter to it.
-        this.listView.setAdapter(mSpotifyTrackAdapter);
-//        mSpotifyTrackAdapter.notifyDataSetChanged();
+//        mSpotifyTrackAdapter =
+//                new CustomListAdapter(this.getActivity(),
+//                        mSpotifyTracks);
+//
+//        // Get a reference to the ListView, and attach this adapter to it.
+//        this.mListViewTitle.setAdapter(mSpotifyTrackAdapter);
+        mSpotifyTrackAdapter.notifyDataSetChanged();
     }
 
 
@@ -192,6 +219,9 @@ public class ArtistTopTenFragment extends Fragment {
             Log.i("Debug:", "Download complete: result");
             SpotifyContent newTrack = null;
 
+//            // Clear the tracks
+            mSpotifyTracks.clear();
+
             for (Track item: spotifyTracks.tracks) {
                 try {
                     newTrack = new SpotifyContent(
@@ -215,6 +245,7 @@ public class ArtistTopTenFragment extends Fragment {
 
                     Log.i (TAG_NAME, item.name + " Error");
                 }
+
                 // Store the artists found
                 mSpotifyTracks.add(newTrack);
             }
@@ -226,8 +257,11 @@ public class ArtistTopTenFragment extends Fragment {
                 Toast toast = Toast.makeText(context, "onPostExecute: No tracks found for " + spotifyArtist.toString(), duration);
                 toast.show();
             }
-            else
-                populateTrackListView();                // Update the listView
+            else {
+                mSpotifyTrackAdapter.notifyDataSetChanged();
+//                populateTrackListView();                // Update the listView
+            }
+
         }
     }
 }
