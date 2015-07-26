@@ -15,46 +15,19 @@ import android.view.MenuItem;
 
 public class ArtistActivity extends AppCompatActivity {
     private static final String TAG_NAME = ArtistActivity.class.getSimpleName();
-    //private ArtistTopTenFragment _fragmentTitle;
-    //private final  String TAG_FRAGMENT = "TitleFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist);
 
-        // Get the information passed
-        Bundle extras = getIntent().getExtras();
+         // Call the fragment for Top 10 Tracks
+        if (savedInstanceState == null) {
 
-        // Check the extras have been populated
-        if (extras != null) {
-            String spotifyID = extras.getString(Intent.EXTRA_TEXT);         // Artist ID
-            String spotifyArtist = extras.getString(Intent.EXTRA_TITLE);    // Artist Name
-
-            // Call the fragment for Top 10 Tracks
-            if (savedInstanceState == null) {
-
-                ArtistTopTenFragment mFragment = new ArtistTopTenFragment();
-
-                // Try - mFragment.setArguments(getIntent().getExtras());
-                extras.putString("ID", spotifyID);
-                extras.putString("Artist", spotifyArtist);
-                mFragment.setArguments(extras);
-
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, mFragment)
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new ArtistTopTenFragment())
 //                        .addToBackStack(null)
-                        .commit();
-            }
-
-            // Amend the Fragment title
-//            android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-//            try {
-//                actionBar.setSubtitle(spotifyArtist);
-//            }
-//            catch (NullPointerException e){
-//                Log.i(TAG_NAME, "Exception:" + e.getMessage());
-//            }
+                    .commit();
         }
     }
 
@@ -73,35 +46,10 @@ public class ArtistActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-//        else if (id == android.R.id.home) {
-//            // Thanks Stackoverflow !!
-//            Intent intent = NavUtils.getParentActivityIntent(this);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//            NavUtils.navigateUpTo(this, intent);
-//            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-//                getSupportFragmentManager().popBackStack();
-//            }
-//            else {
-//                super.onBackPressed();
-//            }
-//        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    // *********************************** Not working!!!
-
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-//                this.finish();
-//            }
-//            else
-//                getSupportFragmentManager().popBackStack();
-//        }
-//        return false;
-//    }
-//    // ********************************** Not working!!!
 
     @Override
     public void onBackPressed() {

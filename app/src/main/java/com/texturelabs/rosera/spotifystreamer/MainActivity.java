@@ -5,13 +5,14 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private MainActivityFragment _fragmentArtist;
+    //private MainActivityFragment _fragmentArtist;
     private final  String TAG_FRAGMENT = "ArtistFragment";
 
     @Override
@@ -39,8 +40,6 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
-
 
         return super.onOptionsItemSelected(item);
     }

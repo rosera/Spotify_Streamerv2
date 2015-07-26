@@ -4,30 +4,31 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Parcelable class structure
  * Created by rosera on 05/07/15.
  */
 public class SpotifyContent implements Parcelable {
-    String  _mainTitle;
-    String  _subTitle;
-    String  _imageURI;
-    String  _albumTitle;
-    int     _Task;
+    String  mSpotifyTitle;
+    String  mSpotifySubTitle;
+    String  mSpotifyImageURI;
+    String  mSpotifyAlbumTitle;
+    int     mFragmentTask;
     
 
     public SpotifyContent(String mainTitle, String subTitle, String albumTitle, String imageURI, int Task_Type) {
-        this._mainTitle     = mainTitle;
-        this._subTitle      = subTitle;
-        this._imageURI      = imageURI;
-        this._albumTitle    = albumTitle;
-        this._Task          = Task_Type;
+        this.mSpotifyTitle = mainTitle;
+        this.mSpotifySubTitle = subTitle;
+        this.mSpotifyImageURI = imageURI;
+        this.mSpotifyAlbumTitle = albumTitle;
+        this.mFragmentTask = Task_Type;
     }
 
     private SpotifyContent(Parcel in) {
-        this._mainTitle = in.readString();
-        this._subTitle = in.readString();
-        this._albumTitle = in.readString();
-        this._imageURI = in.readString();
-        this._Task = in.readInt();
+        this.mSpotifyTitle = in.readString();
+        this.mSpotifySubTitle = in.readString();
+        this.mSpotifyAlbumTitle = in.readString();
+        this.mSpotifyImageURI = in.readString();
+        this.mFragmentTask = in.readInt();
     }
 
     @Override
@@ -37,11 +38,11 @@ public class SpotifyContent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this._mainTitle);
-        dest.writeString(this._subTitle);
-        dest.writeString(this._imageURI);
-        dest.writeString(this._albumTitle);
-        dest.writeInt(this._Task);
+        dest.writeString(this.mSpotifyTitle);
+        dest.writeString(this.mSpotifySubTitle);
+        dest.writeString(this.mSpotifyImageURI);
+        dest.writeString(this.mSpotifyAlbumTitle);
+        dest.writeInt(this.mFragmentTask);
     }
 
     public final Parcelable.Creator<SpotifyContent> CREATOR = new Parcelable.Creator<SpotifyContent>() {

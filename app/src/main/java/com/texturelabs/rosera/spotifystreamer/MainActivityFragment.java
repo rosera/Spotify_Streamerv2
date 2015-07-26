@@ -1,20 +1,16 @@
 package com.texturelabs.rosera.spotifystreamer;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -23,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -41,15 +36,15 @@ import retrofit.RetrofitError;
 public class MainActivityFragment extends Fragment {
 
     // Add global tag for debug
-    private static final String TAG_NAME = MainActivityFragment.class.getSimpleName();
-    private static final int TAG_ARTIST = 1;
+    private static final String             TAG_NAME = MainActivityFragment.class.getSimpleName();
+    private static final int                TAG_ARTIST = 1;
 
-    private ArrayAdapter<SpotifyContent>    mSpotifyArtistAdapter;
-    private static ArrayList<SpotifyContent>       mSpotifyArtist;
-    private static String                   mArtist;
-    private ListView                        listView;
-    private List<Artist>                    artists;
-    private boolean                         mParcelable = false;
+    private ArrayAdapter<SpotifyContent>        mSpotifyArtistAdapter;
+    private static ArrayList<SpotifyContent>    mSpotifyArtist;
+    //private static String                       mArtist;
+    private ListView                            mListViewArtist;
+    private List<Artist>                        mListSpotifyArtist;
+    private boolean                             mParcelable = false;
 
     /**
      * Name: MainActivityFragment
@@ -91,13 +86,7 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-
-        if (mParcelable == true)
+        if (mParcelable)
             populateArtistListView();
     }
 
@@ -117,16 +106,16 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        listView = (ListView) rootView.findViewById(R.id.listViewArtists);
+        mListViewArtist = (ListView) rootView.findViewById(R.id.listViewArtists);
 
-        if (mParcelable == false)
-            mSpotifyArtist = new ArrayList<SpotifyContent>();
+        if (!mParcelable)
+            mSpotifyArtist = new ArrayList<>();
 
         mSpotifyArtistAdapter = new CustomListAdapter(getActivity(), mSpotifyArtist);
-        listView.setAdapter(mSpotifyArtistAdapter);
+        mListViewArtist.setAdapter(mSpotifyArtistAdapter);
 
         // Add click behaviour for the title artist listview
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListViewArtist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
@@ -138,10 +127,10 @@ public class MainActivityFragment extends Fragment {
                  * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
                  *
                  * Description: Initiate an activity for the selected artist
-                */
-                Intent intent = new Intent(getActivity(), ArtistActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, artistContent._subTitle);      // Artist ID
-                intent.putExtra(Intent.EXTRA_TITLE, artistContent._mainTitle);    // Artist Name
+                 */
+                Intent intent = new Intent(getActivity(), ArtistActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
+                        .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);    // Artist Name
                 startActivity(intent);
             }
         });
@@ -237,12 +226,12 @@ public class MainActivityFragment extends Fragment {
 
         SpotifyApi api;
         SpotifyService spotifyService;
+        ArtistsPager spotifyContent = (ArtistsPager)null;
 
         @Override
         protected ArtistsPager doInBackground(String... params) {
             String searchArtist = params[0];
             boolean result = false;
-            ArtistsPager spotifyContent = (ArtistsPager)null;
 
             api = new SpotifyApi();
             spotifyService = api.getService();
@@ -276,11 +265,11 @@ public class MainActivityFragment extends Fragment {
                 toast.show();
             }
             else {
-                artists = result.artists.items;
+                mListSpotifyArtist = result.artists.items;
                 mSpotifyArtist.clear();
 
                 // Confirm results retrieved
-                if (artists.size()==0) {
+                if (mListSpotifyArtist.size()==0) {
                     Context context = getActivity();
                     int duration = Toast.LENGTH_SHORT;
 
