@@ -1,4 +1,4 @@
-package com.texturelabs.rosera.spotifystreamer;
+package com.texturelabs.rosera.spotifystreamer.utility;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.texturelabs.rosera.spotifystreamer.R;
 
 import java.util.ArrayList;
 

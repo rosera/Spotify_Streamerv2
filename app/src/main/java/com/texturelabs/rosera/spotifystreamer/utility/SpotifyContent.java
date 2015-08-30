@@ -1,4 +1,4 @@
-package com.texturelabs.rosera.spotifystreamer;
+package com.texturelabs.rosera.spotifystreamer.utility;
 
 import android.os.Parcel;
 import android.os.Parcelable;
