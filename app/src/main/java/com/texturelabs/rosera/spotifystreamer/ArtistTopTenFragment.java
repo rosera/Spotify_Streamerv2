@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.texturelabs.rosera.spotifystreamer.media.MediaDialogFragment;
+import com.texturelabs.rosera.spotifystreamer.utility.CustomListAdapter;
+import com.texturelabs.rosera.spotifystreamer.utility.SpotifyContent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,9 +31,11 @@ import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.RetrofitError;
 
-/**
- * Name: MainActivityFragment
- * Task 2 - Top Ten Titles for an Artist
+/*
+ * Class: ArtistTopTenFragment
+ * Extends: Fragment
+ * Description: Display the top ten tracks for an artist
+ *
  */
 
 public class ArtistTopTenFragment extends Fragment {
@@ -41,9 +48,18 @@ public class ArtistTopTenFragment extends Fragment {
     ListView                                mListViewTitle;
     boolean                                 mTitleParcelable = false;
 
+    // TODO: Change to mechanism to determine whether two panes are required or not
+    private boolean                         mTwoPane = true;
+
     public ArtistTopTenFragment() {
     }
 
+    /*************
+     * Name: onCreate
+     * @param savedInstanceState
+     * Description:
+     *
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,35 +74,66 @@ public class ArtistTopTenFragment extends Fragment {
         }
     }
 
+    /******************
+     * Name: onSaveInstanceState
+     * @param outState
+     * Description:
+     *
+     */
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("Tracks", mSpotifyTracks);
     }
 
+
+    /*******************
+     * Name: onCreateView
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     * Description:
+     *
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 // Review: pass fragment arguments rather than amend constructor signature
+
+        // TODO: Amend to argument passing rather than intent structure
+
         Intent intent = getActivity().getIntent();
-        if (intent != null) {
+        Bundle args = getArguments();
+
+        if (args != null){
+            if (args.containsKey("ArtistID"))
+                this.mSpotifyID = args.getString("ArtistID");
+
+            if (args.containsKey("Name"))
+                this.mSpotifyArtist = args.getString("Name");
+        } else {
             this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TEXT);
             this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TITLE);
         }
+
 // Review: pass fragment arguments rather than amend constructor signature
 
-        // Change the title - todo (add string resource)
-        // Amend the Fragment title
-        ActionBar actionBar = getActivity().getActionBar();
-        try {
-            actionBar.setSubtitle(mSpotifyArtist);
-        }
-        catch (NullPointerException e){
-            Log.i(TAG_NAME, "Exception:" + e.getMessage());
-        }
+        // TODO: Amend the code for mTwoPane
+        if (!mTwoPane) {
+            // Change the title - TODO: (add string resource)
+            // Amend the Fragment title
+            ActionBar actionBar = getActivity().getActionBar();
+            try {
+                actionBar.setSubtitle(mSpotifyArtist);
+            } catch (NullPointerException e) {
+                Log.i(TAG_NAME, "Exception:" + e.getMessage());
+            }
 
-        getActivity().setTitle("Top 10 Tracks");
+            getActivity().setTitle("Top 10 Tracks");
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
 
@@ -102,11 +149,11 @@ public class ArtistTopTenFragment extends Fragment {
         mListViewTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
-                Context context = getActivity();
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, "Intent for Task 2", duration);
-                toast.show();
+//                Context context = getActivity();
+//                int duration = Toast.LENGTH_SHORT;
+//
+//                Toast toast = Toast.makeText(context, "Intent for Task 2", duration);
+//                toast.show();
 
                 // Grab the selected text from the adapterView (Artist)
 //                final String strArtist = (String) adapterView.getItemAtPosition(position);
@@ -118,17 +165,28 @@ public class ArtistTopTenFragment extends Fragment {
                  *
                  * Description: Initiate an activity for the selected artist
                  */
+
+                FragmentManager fm = getFragmentManager();
+                MediaDialogFragment mediaFragment = new MediaDialogFragment();
+                mediaFragment.show(fm, "dialog");
+
+
 //                Intent intent = new Intent(getActivity(), ArtistActivity.class)
 //                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifyTitle);
 //                startActivity(intent);
             }
         });
 
-
         // Inflate the layout for this fragment
         return rootView;
     }
 
+
+    /***************
+     * Name: onActivityCreated
+     * @param savedInstanceState
+     * Description:
+     */
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -157,6 +215,7 @@ public class ArtistTopTenFragment extends Fragment {
      * Name: ArtistAsyncTask
      * Called from  searchArtist.setOnEditorActionListener
      * Access the Spotify Web API and store the information returned
+     *
      */
     private class TracksAsyncTask extends AsyncTask<String, Void, Tracks> {
 
@@ -194,14 +253,18 @@ public class ArtistTopTenFragment extends Fragment {
             Log.i("Debug:", "Download complete: result");
             SpotifyContent newTrack = null;
 
-            if (spotifyTracks == null) {
-                Context context = getActivity();
-                int duration = Toast.LENGTH_LONG;
+/******************* Remove **************************/
+//            if (spotifyTracks == null) {
+//                Context context = getActivity();
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast toast = ArtistsIDToast.makeText(context, "Artist Top Ten - Please check your internet connection", duration);
+//                toast.show();
+//            }
+//            else {
+/******************* Remove **************************/
 
-                Toast toast = Toast.makeText(context, "Please check your internet connection", duration);
-                toast.show();
-            }
-            else {
+            if (spotifyTracks != null) {
                 // Clear the tracks
                 mSpotifyTracks.clear();
 

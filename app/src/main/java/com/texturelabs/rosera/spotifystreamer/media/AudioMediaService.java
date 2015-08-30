@@ -22,9 +22,17 @@ import android.os.IBinder;
 public class AudioMediaService  extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
+
     AudioMediaService () {
 
     }
+
+
+    /**************************************************************************
+     * Name: AudioMedia Player
+     * @return
+     *
+     */
 
     public boolean AudioMediaPlayer() {
         boolean setPlayState = false;
@@ -39,10 +47,17 @@ public class AudioMediaService  extends Service implements MediaPlayer.OnPrepare
         return setPlayState;
     }
 
+    /**************************************************************************
+     * Name: onBind
+     * @param intent
+     * @return IBinder object
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+
 
     @Override
     public void onCompletion(MediaPlayer mp) {

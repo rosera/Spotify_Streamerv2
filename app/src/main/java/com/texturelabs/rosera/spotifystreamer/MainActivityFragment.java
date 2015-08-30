@@ -6,17 +6,16 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.texturelabs.rosera.spotifystreamer.utility.CustomListAdapter;
+import com.texturelabs.rosera.spotifystreamer.utility.SpotifyContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,36 +27,40 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 import retrofit.RetrofitError;
 
 
-/**
-     * Name: MainActivityFragment
-     * Task 1 - UI to search for an Artist
-     */
+/*
+ * Class: MainActivityFragment
+ * Extends: Fragment
+ * Description: Main Spotify Stream activity
+ *
+ */
 
 public class MainActivityFragment extends Fragment {
 
     // Add global tag for debug
+    private final  String                   ARTISTFRAGMENT_TAG = "ArtistFragment";
     private static final String             TAG_NAME = MainActivityFragment.class.getSimpleName();
     private static final int                TAG_ARTIST = 1;
 
     private ArrayAdapter<SpotifyContent>        mSpotifyArtistAdapter;
     private static ArrayList<SpotifyContent>    mSpotifyArtist;
-    //private static String                       mArtist;
     private ListView                            mListViewArtist;
     private List<Artist>                        mListSpotifyArtist;
     private boolean                             mParcelable = false;
+    private boolean                             mTwoPane = true;
 
-    /**
+    /*
      * Name: MainActivityFragment
-     * Initialise  memory
+     * Comment: Dont do any memory allocation in a fragment constructor
      */
 
     public MainActivityFragment() {
 
     }
 
-    /**
+    /*
      * Name: onCreate
-     * Try and retain instance information
+     * @param savedInstanceState
+     * Comment: Added paracleable functionality
      */
 
     @Override
@@ -75,12 +78,26 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    /**************************************************************************
+     * Name: onSaveInstanceState
+     * @param outState
+     * Comment: Save information into the paracleable object
+     *
+     */
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("Artist", mSpotifyArtist);
     }
 
+
+    /**************************************************************************
+     * Name: onActivityCreated
+     * @param savedInstanceState
+     * Comment:
+     *
+     */
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -91,17 +108,20 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-    /**
+    /**************************************************************************
      * Name: onCreateView
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
      * Initialise the structures
      * Setup the listeners for edit control and listview
+     *
      */
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -122,79 +142,60 @@ public class MainActivityFragment extends Fragment {
                 // Grab the selected text from the adapterView (Artist)
                 SpotifyContent artistContent = (SpotifyContent) adapterView.getItemAtPosition(position);
 
-                /**
-                 * Code snippet: Explicit intent - ArtistActivity
-                 * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
-                 *
-                 * Description: Initiate an activity for the selected artist
-                 */
-                Intent intent = new Intent(getActivity(), ArtistActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
-                        .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);    // Artist Name
-                startActivity(intent);
-            }
-        });
+//                Intent intent = new Intent(getActivity(), ArtistActivity.class)
+//                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
+//                        .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);
 
+                // TODO: Amend code to use Bundle
+                // TODO: Single fragment code versus dual pane implementation
 
-        /**
-         * Interesting aside:
-         * Cant use setOnKeyListener as this only works for hardware keys.
-         * Instead use the solution from Android developers
-         * Should have used a searchView :-(
-         */
+                if (!mTwoPane) {
 
-        final EditText searchArtist = (EditText) rootView.findViewById(R.id.editTextSearchArtist);
-        searchArtist.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView Artist, int action, KeyEvent keyEvent) {
-                switch (action) {
-                    case EditorInfo.IME_ACTION_DONE:
-                        if (searchArtist.getText().length() > 0) {
-
-                            // Execute the artist search
-                            ArtistAsyncTask titleTask = new ArtistAsyncTask();
-                            titleTask.execute(searchArtist.getText().toString());
-                        }
-                        break;
-
-                    default:
-                        break;
+                    /**
+                     * Code snippet: Explicit intent - ArtistActivity
+                     * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
+                     *
+                     * Description: Initiate an activity for the selected artist
+                     */
+                    Intent intent = new Intent(getActivity(), ArtistActivity.class)
+//                            .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
+//                            .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);    // Artist Name
+                            .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistSubTitle()) // Artist ID
+                            .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistTitle());   // Artist Name
+                    startActivity(intent);
                 }
-                return false;
+                else {
+
+                    Bundle arguments = new Bundle();
+//                    arguments.putString("ArtistID", artistContent.mSpotifySubTitle);
+//                    arguments.putString("Name", artistContent.mSpotifyTitle);
+                    arguments.putString("ArtistID", artistContent.getArtistSubTitle());
+                    arguments.putString("Name", artistContent.getArtistTitle());
+
+                    ArtistTopTenFragment fragment = new ArtistTopTenFragment();
+                    fragment.setArguments(arguments);
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
+                            .commit();
+                }
             }
-
         });
-
-//// Review: use SearchView instead of EditText
-//        final SearchView searchText = (SearchView) rootView.findViewById(R.id.searchText);
-//
-//        searchText.setIconifiedByDefault(false);
-//        searchText.setQueryHint(getResources().getString(R.string.artist_search_hint));
-//        searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                searchKeyword = searchText.getQuery().toString();
-//                if (isNetworkAvailable()) {
-//                    FetchArtistTask task = new FetchArtistTask();
-//                    task.execute(searchText.getQuery().toString());
-//                } else {
-//                    Toast.makeText(getActivity(), getResources().getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                return false;
-//            }
-//        });
-//// Review: use SearchView instead of EditText
 
         return rootView;
     }
 
 
+    /**************************************************************************
+     * Name: fetchSpotifyContent
+     * @param artist
+     * Description: Access the Spotify API
+     */
+
+    public void fetchSpotifyContent(String artist) {
+        FetchArtistTask task = new FetchArtistTask();
+        task.execute(artist);
+    }
 
     /**
      * Name: populateArtistListView
@@ -217,12 +218,13 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-    /**
+    /*
      * Name: ArtistAsyncTask
      * Called from  searchArtist.setOnEditorActionListener
      * Access the Spotify Web API and store the information returned
      */
-    private class ArtistAsyncTask extends AsyncTask<String, Void, ArtistsPager> {
+
+    private class FetchArtistTask extends AsyncTask<String, Void, ArtistsPager> {
 
         SpotifyApi api;
         SpotifyService spotifyService;
@@ -250,21 +252,42 @@ public class MainActivityFragment extends Fragment {
             return (spotifyContent);
         }
 
+
+        /*
+         * Name: onProgressUpdate
+         * @param progress
+         * Description: N/A
+         *
+         */
+
         protected void onProgressUpdate(Integer... progress) {
         }
 
+        /*
+         * Name: onPostExecute
+         * Description:
+         *
+         */
+
         protected void onPostExecute(ArtistsPager result) {
 
-            Log.i("Debug:", "Download complete: result");
+/**************** REMOVE *******************/
+//
+//            Log.i("Debug:", "Download complete: result");
+//
+//            if (result == null) {
+//                Context context = getActivity();
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast toast = Toast.makeText(context, "Please check your internet connection", duration);
+//                toast.show();
+//            }
+//
+//
+//
+//            else {
+/**************** REMOVE *******************/
 
-            if (result == null) {
-                Context context = getActivity();
-                int duration = Toast.LENGTH_LONG;
-
-                Toast toast = Toast.makeText(context, "Please check your internet connection", duration);
-                toast.show();
-            }
-            else {
                 mListSpotifyArtist = result.artists.items;
                 mSpotifyArtist.clear();
 
@@ -309,7 +332,7 @@ public class MainActivityFragment extends Fragment {
                     // Update the listView
                     populateArtistListView();
                 }
-            }
+//            }
         }
     }
 }

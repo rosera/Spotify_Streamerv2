@@ -69,7 +69,7 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
         ViewHolder viewHolder;
         SpotifyContent  spotifyContent  = this.mSpotifyContent.get(position);
 
-        switch(spotifyContent.mFragmentTask) {
+        switch(spotifyContent.getFragmentTask()) {
             case TAG_ARTIST:
                 if (view == null) {
                     view = LayoutInflater.from(mActivity).inflate(R.layout.list_item_spotify, null);
@@ -82,17 +82,18 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
                     viewHolder = (ViewHolder) view.getTag();
                 }
 
-                viewHolder.artistTitle.setText(spotifyContent.mSpotifyTitle);
+                viewHolder.artistTitle.setText(spotifyContent.getArtistTitle());
 
                 // Apply image or add stock image if URI not entered
-                if (spotifyContent.mSpotifyImageURI.length() > 0) {
+                if (spotifyContent.getArtistURI().length() > 0) {
                     Picasso.with(mActivity)
-                            .load(spotifyContent.mSpotifyImageURI)
+                            .load(spotifyContent.getArtistURI())
                             .into(viewHolder.artistImage);
                 } else {
                     viewHolder.artistImage.setImageResource(R.drawable.blank_cd);
                 }
                 break;
+
             case TAG_TITLE:
                 if (view == null) {
                     view = LayoutInflater.from(mActivity).inflate(R.layout.list_item_top_ten, null);
@@ -106,16 +107,16 @@ public class CustomListAdapter extends ArrayAdapter<SpotifyContent> {
                 }
 
                 // Render text and image
-                if (spotifyContent.mSpotifyTitle != null)
-                    viewHolder.artistTitle.setText(spotifyContent.mSpotifyTitle);
+                if (spotifyContent.getArtistTitle() != null)
+                    viewHolder.artistTitle.setText(spotifyContent.getArtistTitle());
 
-                if (spotifyContent.mSpotifyAlbumTitle != null)
-                    viewHolder.artistSubTitle.setText(spotifyContent.mSpotifyAlbumTitle);
+                if (spotifyContent.getArtistAlbum() != null)
+                    viewHolder.artistSubTitle.setText(spotifyContent.getArtistAlbum());
 
                 // Apply image or add stock image if URI not entered
-                if (spotifyContent.mSpotifyImageURI.length() > 0) {
+                if (spotifyContent.getArtistURI().length() > 0) {
                     Picasso.with(mActivity)
-                            .load(spotifyContent.mSpotifyImageURI)
+                            .load(spotifyContent.getArtistURI())
                             .into(viewHolder.artistImage);
                 } else {
                     viewHolder.artistImage.setImageResource(R.drawable.blank_cd);

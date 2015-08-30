@@ -1,33 +1,149 @@
+/*
+ * Name: Spotify Streamer v2
+ * Course: Android Developer Nanodegree
+ * Author: Richard Rose
+ * Cohort: June 2015
+ */
+
+
 package com.texturelabs.rosera.spotifystreamer;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-
+/*
+ * Class: MainActivity
+ * Extends: AppCompatActivity
+ * Description: Main Spotify Stream activity
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
-    //private MainActivityFragment _fragmentArtist;
-    private final  String TAG_FRAGMENT = "ArtistFragment";
+    private final  String TAG_FRAGMENT          = "ArtistFragment";
+    private final  String ARTISTFRAGMENT_TAG    = "ArtistFragment";
+
+    /**
+     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+     * device.
+     */
+    private boolean mTwoPane;
+
+
+    /*
+     * Name: onCreate
+     * @param savedInstanceState
+     * Description: Inflate code ready to display on device
+     * Comment: Added master detail flow to existing code (see layout-sw600dp)
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Check if id.container is found - this means two panes (static and dynamic) are being displayed
+        if (findViewById(R.id.container) != null) {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+
+            // TODO: Use a bundle to store mTwoPane state and pass through as argument
+
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new ArtistTopTenFragment(), ARTISTFRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
+
     }
 
+    /*
+     * Name: onCreateOptionsMenu
+     * @param menu
+     * @return
+     * Description: Inflate menu to display on device
+     * Comment: Added SearchView to replace the original EditView used in Task 1
+     *
+     */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Retrieve the SearchView and plug it into SearchManager
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        // Review: use SearchView instead of EditText
+        searchView.setIconifiedByDefault(true);
+        searchView.setQueryHint(getResources().getString(R.string.artist_search_hint));
+
+// Review: use SearchView instead of EditText
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                /* Ensure the device is online prior to initiating a network task */
+                if (isDeviceOnline()) {
+                    String searchKeyword = searchView.getQuery().toString();
+
+                    // Find the fragment instance
+                    MainActivityFragment fragment = (MainActivityFragment)
+                            getSupportFragmentManager().findFragmentById(R.id.fragment);
+
+                    // Confirm the fragment exists
+                    if (fragment != null) {
+                        // Make a Async call to get new artist
+                        fragment.fetchSpotifyContent(searchKeyword);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
+
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+// Review: use SearchView instead of EditText
+
         return true;
     }
+
+
+    /*
+     * Name: onOptionsItemSelected
+     * @param item
+     * @return
+     * Description: Handler for menu item selection
+     *
+     */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -37,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+        // Todo: Add country selection on the setting
         if (id == R.id.action_settings) {
             return true;
         }
@@ -44,5 +161,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     * Name: isDeviceOnline
+     * @return
+     * Description: Check on the device network status
+     * Comment: Standard method on which to check the network availability
+     *          Ensure required permissions have been added to Android.Manifest
+     */
 
+    public boolean isDeviceOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
 }

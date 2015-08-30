@@ -8,11 +8,11 @@ import android.os.Parcelable;
  * Created by rosera on 05/07/15.
  */
 public class SpotifyContent implements Parcelable {
-    String  mSpotifyTitle;
-    String  mSpotifySubTitle;
-    String  mSpotifyImageURI;
-    String  mSpotifyAlbumTitle;
-    int     mFragmentTask;
+    private String  mSpotifyTitle;          // Artist Name
+    private String  mSpotifySubTitle;       // Artist ID
+    private String  mSpotifyImageURI;       // Artist URI
+    private String  mSpotifyAlbumTitle;     // Artist Album
+    private int     mFragmentTask;          // Task indicator
     
 
     public SpotifyContent(String mainTitle, String subTitle, String albumTitle, String imageURI, int Task_Type) {
@@ -56,4 +56,23 @@ public class SpotifyContent implements Parcelable {
             return new SpotifyContent[i];
         }
     };
+
+    /*
+     * Get Methods
+     *
+     */
+
+
+
+    public String getArtistTitle() { return mSpotifyTitle; }
+
+    public String getArtistSubTitle() {
+        return mSpotifySubTitle;
+    }
+
+    public String getArtistURI() { return mSpotifyImageURI; }
+
+    public String getArtistAlbum() { return mSpotifyAlbumTitle; }
+
+    public int getFragmentTask() { return mFragmentTask; }
 }

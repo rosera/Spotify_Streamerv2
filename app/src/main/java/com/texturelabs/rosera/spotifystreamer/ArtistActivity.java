@@ -12,8 +12,15 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/*
+ * Class: ArtistActivity
+ * Extends: AppCompatActivity
+ * Description: Main Spotify Stream activity
+ *
+ */
 
 public class ArtistActivity extends AppCompatActivity {
+
     private static final String TAG_NAME = ArtistActivity.class.getSimpleName();
 
     @Override
@@ -21,7 +28,7 @@ public class ArtistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist);
 
-         // Call the fragment for Top 10 Tracks
+        // Call the fragment for Top 10 Tracks
         if (savedInstanceState == null) {
 
             getSupportFragmentManager().beginTransaction()
@@ -31,12 +38,29 @@ public class ArtistActivity extends AppCompatActivity {
         }
     }
 
+
+    /*********************************************
+     * Name: onCreateOptionsMenu
+     * @param menu
+     * @return
+     * Description:
+     *
+     */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_artist, menu);
         return true;
     }
+
+    /***********************************************
+     * Name: onOptionsItemSelected
+     * @param item
+     * @return
+     * Description:
+     *
+     */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -50,6 +74,11 @@ public class ArtistActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /************************************************
+     * Name: onBackPressed
+     * Description:
+     *
+     */
 
     @Override
     public void onBackPressed() {
