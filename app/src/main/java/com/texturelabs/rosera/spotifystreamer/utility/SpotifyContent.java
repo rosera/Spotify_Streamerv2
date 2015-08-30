@@ -62,8 +62,6 @@ public class SpotifyContent implements Parcelable {
      *
      */
 
-
-
     public String getArtistTitle() { return mSpotifyTitle; }
 
     public String getArtistSubTitle() {
