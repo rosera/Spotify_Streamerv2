@@ -50,7 +50,7 @@ public class MainActivityFragment extends Fragment {
 
     /*
      * Name: MainActivityFragment
-     * Comment: Dont do any memory allocation in a fragment constructor
+     * Comment: Do not do any memory allocation in a fragment constructor
      */
 
     public MainActivityFragment() {
@@ -60,7 +60,7 @@ public class MainActivityFragment extends Fragment {
     /*
      * Name: onCreate
      * @param savedInstanceState
-     * Comment: Added paracleable functionality
+     * Comment: Added parcelable functionality
      */
 
     @Override
@@ -110,10 +110,10 @@ public class MainActivityFragment extends Fragment {
 
     /**************************************************************************
      * Name: onCreateView
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater - pipeline of data
+     * @param container - existing viewgroup
+     * @param savedInstanceState - saved instance state information
+     * @return View - the created view
      * Initialise the structures
      * Setup the listeners for edit control and listview
      *
@@ -142,10 +142,6 @@ public class MainActivityFragment extends Fragment {
                 // Grab the selected text from the adapterView (Artist)
                 SpotifyContent artistContent = (SpotifyContent) adapterView.getItemAtPosition(position);
 
-//                Intent intent = new Intent(getActivity(), ArtistActivity.class)
-//                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
-//                        .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);
-
                 // TODO: Amend code to use Bundle
                 // TODO: Single fragment code versus dual pane implementation
 
@@ -158,19 +154,17 @@ public class MainActivityFragment extends Fragment {
                      * Description: Initiate an activity for the selected artist
                      */
                     Intent intent = new Intent(getActivity(), ArtistActivity.class)
-//                            .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifySubTitle)      // Artist ID
-//                            .putExtra(Intent.EXTRA_TITLE, artistContent.mSpotifyTitle);    // Artist Name
+                            .putExtra("TwoPane", mTwoPane)
                             .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistSubTitle()) // Artist ID
                             .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistTitle());   // Artist Name
-                    startActivity(intent);
-                }
-                else {
 
+                    startActivity(intent);
+                } else {
                     Bundle arguments = new Bundle();
-//                    arguments.putString("ArtistID", artistContent.mSpotifySubTitle);
-//                    arguments.putString("Name", artistContent.mSpotifyTitle);
+
                     arguments.putString("ArtistID", artistContent.getArtistSubTitle());
                     arguments.putString("Name", artistContent.getArtistTitle());
+                    arguments.putBoolean("TwoPane", mTwoPane);
 
                     ArtistTopTenFragment fragment = new ArtistTopTenFragment();
                     fragment.setArguments(arguments);
@@ -188,7 +182,7 @@ public class MainActivityFragment extends Fragment {
 
     /**************************************************************************
      * Name: fetchSpotifyContent
-     * @param artist
+     * @param artist - name of artist to search
      * Description: Access the Spotify API
      */
 
@@ -218,6 +212,52 @@ public class MainActivityFragment extends Fragment {
     }
 
 
+    public void displayFragmentMessage(String msg) {
+        Context context = getActivity();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
+    }
+
+    public void setSpotifyArtistInformation (ArtistsPager result) {
+
+        for (Artist item: result.artists.items) {
+            SpotifyContent newArtist= null;
+
+            try {
+                newArtist = new SpotifyContent(
+                        item.name,
+                        item.id,
+                        item.id,
+                        "",
+                        (item.images.get(0).url),
+                        TAG_ARTIST,
+                        0L);
+
+            } catch (Exception e) {
+                // No image will cause an exception
+                if (item.images.size() == 0) {
+                    // No image found - deal with this in the customer adapter
+                    newArtist = new SpotifyContent(
+                            item.name,
+                            item.id,
+                            item.id,
+                            "",
+                            "",
+                            TAG_ARTIST,
+                            0L);
+                }
+
+                Log.i (TAG_NAME, e.toString());
+            }
+            // Store the artists found
+            mSpotifyArtist.add(newArtist);
+        }
+
+        return ;
+    }
+
     /*
      * Name: ArtistAsyncTask
      * Called from  searchArtist.setOnEditorActionListener
@@ -233,12 +273,12 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected ArtistsPager doInBackground(String... params) {
             String searchArtist = params[0];
-            boolean result = false;
+//            boolean result = false;
 
             api = new SpotifyApi();
             spotifyService = api.getService();
 
-// Review: check for exception on spotify call. Also covers lack of internet
+// Udacity Review: check for exception on spotify call. Also covers lack of internet
             try {
                spotifyContent = spotifyService.searchArtists(searchArtist);
             }
@@ -246,8 +286,7 @@ public class MainActivityFragment extends Fragment {
                 Log.i(TAG_NAME, ex.toString());
             }
 
-//            return (spotifyService.searchArtists(searchArtist));
-// Review: check for exception on spotify call. Also covers lack of internet
+// Udacity Review: check for exception on spotify call. Also covers lack of internet
 
             return (spotifyContent);
         }
@@ -271,68 +310,54 @@ public class MainActivityFragment extends Fragment {
 
         protected void onPostExecute(ArtistsPager result) {
 
-/**************** REMOVE *******************/
-//
-//            Log.i("Debug:", "Download complete: result");
-//
-//            if (result == null) {
+            mListSpotifyArtist = result.artists.items;
+            mSpotifyArtist.clear();
+
+            // If not artists retrieved display a message to the user
+            if (mListSpotifyArtist.size()==0) {
+                    displayFragmentMessage("No artists information found");
+
 //                Context context = getActivity();
-//                int duration = Toast.LENGTH_LONG;
+//                int duration = Toast.LENGTH_SHORT;
 //
-//                Toast toast = Toast.makeText(context, "Please check your internet connection", duration);
+//                Toast toast = Toast.makeText(context, "onPostExecute: No artists found", duration);
 //                toast.show();
-//            }
+            }
+            else {
+
+                setSpotifyArtistInformation(result);
+
+//                for (Artist item: result.artists.items) {
+//                    SpotifyContent newArtist= null;
 //
+//                    try {
+//                        newArtist = new SpotifyContent(
+//                                item.name,
+//                                item.id,
+//                                "",
+//                                (item.images.get(0).url),
+//                                TAG_ARTIST);
+//                    } catch (Exception e) {
+//                        // No image will cause an exception
+//                        if (item.images.size() == 0) {
+//                            // No image found - deal with this in the customer adapter
+//                            newArtist = new SpotifyContent(
+//                                    item.name,
+//                                    item.id,
+//                                    "",
+//                                    "",
+//                                    TAG_ARTIST);
+//                        }
 //
-//
-//            else {
-/**************** REMOVE *******************/
+//                        Log.i (TAG_NAME, e.toString());
+//                    }
+//                    // Store the artists found
+//                    mSpotifyArtist.add(newArtist);
+//                }
 
-                mListSpotifyArtist = result.artists.items;
-                mSpotifyArtist.clear();
-
-                // Confirm results retrieved
-                if (mListSpotifyArtist.size()==0) {
-                    Context context = getActivity();
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, "onPostExecute: No artists found", duration);
-                    toast.show();
-                }
-                else {
-                    for (Artist item: result.artists.items) {
-                        SpotifyContent newArtist= null;
-
-                        try {
-                            newArtist = new SpotifyContent(
-                                    item.name,
-                                    item.id,
-                                    "",
-                                    (item.images.get(0).url),
-                                    TAG_ARTIST);
-                        } catch (Exception e) {
-
-                            // No image will cause an exception
-                            if (item.images.size() == 0) {
-                                // No image found - deal with this in the customer adapter
-                                newArtist = new SpotifyContent(
-                                        item.name,
-                                        item.id,
-                                        "",
-                                        "",
-                                        TAG_ARTIST);
-                            }
-
-                            Log.i (TAG_NAME, e.toString());
-                        }
-                        // Store the artists found
-                        mSpotifyArtist.add(newArtist);
-                    }
-
-                    // Update the listView
-                    populateArtistListView();
-                }
-//            }
+                // Update the listView
+                populateArtistListView();
+            }
         }
     }
 }

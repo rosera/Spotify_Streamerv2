@@ -32,11 +32,12 @@ import android.widget.Toast;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private final  String TAG_FRAGMENT          = "ArtistFragment";
+//    private final  String TAG_FRAGMENT          = "ArtistFragment";
     private final  String ARTISTFRAGMENT_TAG    = "ArtistFragment";
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+    /*
+     * Project 2 - Amend UI for dual pane
+     * Confirm whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
@@ -79,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
     /*
      * Name: onCreateOptionsMenu
-     * @param menu
-     * @return
+     * @param menu - menu to be inflated
+     * @return boolean - flag to indicate success
      * Description: Inflate menu to display on device
      * Comment: Added SearchView to replace the original EditView used in Task 1
      *
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(true);
         searchView.setQueryHint(getResources().getString(R.string.artist_search_hint));
 
-// Review: use SearchView instead of EditText
+// Udacity Review: use SearchView instead of EditText
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -114,10 +115,17 @@ public class MainActivity extends AppCompatActivity {
                     MainActivityFragment fragment = (MainActivityFragment)
                             getSupportFragmentManager().findFragmentById(R.id.fragment);
 
+                    ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
+                            getSupportFragmentManager().findFragmentById(R.id.container);
+
                     // Confirm the fragment exists
                     if (fragment != null) {
                         // Make a Async call to get new artist
                         fragment.fetchSpotifyContent(searchKeyword);
+
+                        // Remove existing artist top ten data
+                        if (fragmentTopTen !=null)
+                            fragmentTopTen.removeTopTenTitles();
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
@@ -131,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-// Review: use SearchView instead of EditText
+// Udacity Review: use SearchView instead of EditText
 
         return true;
     }
@@ -139,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
     /*
      * Name: onOptionsItemSelected
-     * @param item
-     * @return
+     * @param item - Indicate the selected menu item
+     * @return boolean - Indicate the selected item
      * Description: Handler for menu item selection
      *
      */
@@ -163,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*
      * Name: isDeviceOnline
-     * @return
+     * @return boolean - flag to indicate network status
      * Description: Check on the device network status
      * Comment: Standard method on which to check the network availability
      *          Ensure required permissions have been added to Android.Manifest

@@ -114,9 +114,13 @@ public class ArtistTopTenFragment extends Fragment {
 
             if (args.containsKey("Name"))
                 this.mSpotifyArtist = args.getString("Name");
+
+            if (args.containsKey("TwoPane"))
+                this.mTwoPane = args.getBoolean("TwoPane");
         } else {
             this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TEXT);
             this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TITLE);
+//            this.mTwoPane = intent.getBooleanExtra("TwoPane", false);
         }
 
 // Review: pass fragment arguments rather than amend constructor signature
@@ -156,8 +160,9 @@ public class ArtistTopTenFragment extends Fragment {
 //                toast.show();
 
                 // Grab the selected text from the adapterView (Artist)
-//                final String strArtist = (String) adapterView.getItemAtPosition(position);
-//                SpotifyContent trackContent = (SpotifyContent) adapterView.getItemAtPosition(position);
+                SpotifyContent trackContent = (SpotifyContent) adapterView.getItemAtPosition(position);
+
+
 
                 /**
                  * Code snippet: Explicit intent - ArtistActivity
@@ -166,14 +171,23 @@ public class ArtistTopTenFragment extends Fragment {
                  * Description: Initiate an activity for the selected artist
                  */
 
+
+                // Grab the selected item information and pass to the dialog fragment
+
+
+                Bundle arguments = new Bundle();
+
+                // Dialog data
+                arguments.putString("Album", trackContent.getArtistAlbum());
+                arguments.putString("Name", mSpotifyArtist);
+                arguments.putString("ImageUrl", trackContent.getArtistURI());
+                arguments.putString("Title", trackContent.getArtistTitle());
+                arguments.putLong("Duration", trackContent.getArtistDuration());
+
                 FragmentManager fm = getFragmentManager();
                 MediaDialogFragment mediaFragment = new MediaDialogFragment();
+                mediaFragment.setArguments(arguments);
                 mediaFragment.show(fm, "dialog");
-
-
-//                Intent intent = new Intent(getActivity(), ArtistActivity.class)
-//                        .putExtra(Intent.EXTRA_TEXT, artistContent.mSpotifyTitle);
-//                startActivity(intent);
             }
         });
 
@@ -207,6 +221,13 @@ public class ArtistTopTenFragment extends Fragment {
 
     public void populateTrackListView() {
 
+        mSpotifyTrackAdapter.notifyDataSetChanged();
+    }
+
+    public void removeTopTenTitles() {
+        // Clear the tracks
+        mSpotifyTracks.clear();
+//        mSpotifyTrackAdapter.notifyDataSetInvalidated();
         mSpotifyTrackAdapter.notifyDataSetChanged();
     }
 
@@ -273,9 +294,11 @@ public class ArtistTopTenFragment extends Fragment {
                         newTrack = new SpotifyContent(
                                 item.name,
                                 item.id,
+                                item.id,
                                 item.album.name,
                                 (item.album.images.get(0).url),
-                                TAG_TITLE);
+                                TAG_TITLE,
+                                item.duration_ms);
                     } catch (Exception e) {
 
                         // No image will cause an exception
@@ -284,9 +307,11 @@ public class ArtistTopTenFragment extends Fragment {
                             newTrack = new SpotifyContent(
                                     item.name,
                                     item.id,
+                                    item.id,
                                     item.album.name,
                                     "",
-                                    TAG_TITLE);
+                                    TAG_TITLE,
+                                    item.duration_ms);
                         }
 
                         Log.i (TAG_NAME, item.name + " Error");

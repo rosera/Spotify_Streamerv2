@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.util.Log;
+
+import java.net.URI;
 
 
 /*
@@ -22,6 +25,9 @@ import android.os.IBinder;
 public class AudioMediaService  extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
+    public static final String LOG_TAG = AudioMediaService.class.getSimpleName();
+    MediaPlayer mediaPlayer;
+    URI uriSpotify;
 
     AudioMediaService () {
 
@@ -58,10 +64,32 @@ public class AudioMediaService  extends Service implements MediaPlayer.OnPrepare
     }
 
 
+    @Override
+    public void onCreate() {
+        Log.v("MediaPlayer method call", "onCreate");
+
+        // Add URI for the title selected
+        //mediaPlayer = MediaPlayer.create(uriSpotify);
+
+        // Add a listener for completion of the streamed content
+        mediaPlayer.setOnCompletionListener(this);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.v("MediaPlayer method call", "onStartCommand");
+
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+
+        return START_STICKY;
+    }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        Log.v("MediaPlayer method call", "onCompletion");
+        stopSelf();
     }
 
     @Override
@@ -71,6 +99,14 @@ public class AudioMediaService  extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
 
+        // Check player
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.release();
+        Log.v("MediaPlayer method call", "onDestroy");
     }
 }

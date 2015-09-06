@@ -10,7 +10,7 @@ android:paddingBottom="5dp"
 tools:context=".MainActivity" >
 <TextView android:text="@string/spotify_streamer_artist" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/textviewArtist"
+    android:id="@+id/textviewMediaArtist"
     android:textSize="35sp"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
@@ -19,18 +19,18 @@ tools:context=".MainActivity" >
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/spotify_streamer_album"
-    android:id="@+id/textviewAlbum"
+    android:id="@+id/textviewMediaAlbum"
     android:textSize="25sp"
     android:textIsSelectable="true"
     android:singleLine="false"
-    android:layout_below="@+id/textviewArtist"
+    android:layout_below="@+id/textviewMediaArtist"
     android:layout_centerHorizontal="true" />
 <ImageView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/albumImage"
+    android:id="@+id/imageviewMediaAlbum"
     android:src="@drawable/coldplay_parachutes"
-    android:layout_below="@+id/textviewAlbum"
+    android:layout_below="@+id/textviewMediaAlbum"
     android:layout_centerHorizontal="true"
     android:layout_marginTop="21dp" />
 <ImageButton
@@ -63,8 +63,8 @@ tools:context=".MainActivity" >
     android:src="@android:drawable/ic_media_rew"
     android:id="@+id/media_rewind"
     android:layout_alignTop="@+id/media_pause"
-    android:layout_alignRight="@+id/albumImage"
-    android:layout_alignEnd="@+id/albumImage" />
+    android:layout_alignRight="@+id/imageviewMediaAlbum"
+    android:layout_alignEnd="@+id/imageviewMediaAlbum" />
 
 <TextView
     android:layout_width="wrap_content"
@@ -102,7 +102,7 @@ tools:context=".MainActivity" >
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceMedium"
     android:text="@string/spotify_streamer_title"
-    android:id="@+id/textviewTitle"
+    android:id="@+id/textviewMediaTitle"
     android:layout_above="@+id/startTime"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="21dp" />
