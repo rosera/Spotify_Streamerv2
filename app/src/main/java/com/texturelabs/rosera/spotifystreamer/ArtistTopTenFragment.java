@@ -69,8 +69,8 @@ public class ArtistTopTenFragment extends Fragment {
             mTitleParcelable = false;
         }
         else {
-                mSpotifyTracks = savedInstanceState.getParcelableArrayList("Tracks");
-                mTitleParcelable = true;
+            mSpotifyTracks = savedInstanceState.getParcelableArrayList("Tracks");
+            mTitleParcelable = true;
         }
     }
 
@@ -128,6 +128,8 @@ public class ArtistTopTenFragment extends Fragment {
 
 
 // Review: pass fragment arguments rather than amend constructor signature
+        View viewFrame = getActivity().findViewById(R.id.container);
+        mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
 
         // TODO: Amend the code for mTwoPane
         if (!mTwoPane) {
@@ -202,8 +204,9 @@ public class ArtistTopTenFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (!mTitleParcelable)
+//        if (!mTitleParcelable)
             // Execute the artist search
+        mSpotifyTracks.clear();
             new TracksAsyncTask().execute(mSpotifyID);
     }
 
@@ -267,24 +270,15 @@ public class ArtistTopTenFragment extends Fragment {
 
         protected void onPostExecute(Tracks spotifyTracks) {
             Log.i("Debug:", "Download complete: result");
-            SpotifyContent newTrack = null;
 
-/******************* Remove **************************/
-//            if (spotifyTracks == null) {
-//                Context context = getActivity();
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast toast = ArtistsIDToast.makeText(context, "Artist Top Ten - Please check your internet connection", duration);
-//                toast.show();
-//            }
-//            else {
-/******************* Remove **************************/
 
             if (spotifyTracks != null) {
                 // Clear the tracks
                 mSpotifyTracks.clear();
 
                 for (Track item: spotifyTracks.tracks) {
+                    SpotifyContent newTrack = null;
+
                     try {
                         newTrack = new SpotifyContent(
                                 item.name,

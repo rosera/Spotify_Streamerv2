@@ -32,8 +32,7 @@ public class ArtistActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ArtistTopTenFragment())
-//                        .addToBackStack(null)
+                    .replace(R.id.container, new ArtistTopTenFragment())
                     .commit();
         }
 

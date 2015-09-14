@@ -46,7 +46,7 @@ public class MainActivityFragment extends Fragment {
     private ListView                            mListViewArtist;
     private List<Artist>                        mListSpotifyArtist;
     private boolean                             mParcelable = false;
-    private boolean                             mTwoPane = false;
+    private static boolean                      mTwoPane;
 
     /*
      * Name: MainActivityFragment
@@ -103,6 +103,7 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
         if (mParcelable)
             populateArtistListView();
     }
@@ -111,7 +112,12 @@ public class MainActivityFragment extends Fragment {
     /**************************************************************************
      * Name: onCreateView
      * @param inflater - pipeline of data
-     * @param container - existing viewgroup
+     * @param container - existing viewgroup        Bundle args = getArguments();
+
+        if (args != null) {
+            if (args.containsKey("TwoPane"))
+                this.mTwoPane = args.getBoolean("TwoPane");
+        }
      * @param savedInstanceState - saved instance state information
      * @return View - the created view
      * Initialise the structures
@@ -125,14 +131,16 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+
+
         // Get a reference to the ListView, and attach this adapter to it.
         mListViewArtist = (ListView) rootView.findViewById(R.id.listViewArtists);
 
         if (!mParcelable)
             mSpotifyArtist = new ArrayList<>();
 
-        if (rootView.findViewById(R.id.container) != null)
-            mTwoPane = true;
+//        if (container.findViewById(R.id.container) != null)
+//            mTwoPane = true;
 
         mSpotifyArtistAdapter = new CustomListAdapter(getActivity(), mSpotifyArtist);
         mListViewArtist.setAdapter(mSpotifyArtistAdapter);
@@ -145,6 +153,9 @@ public class MainActivityFragment extends Fragment {
                 // Grab the selected text from the adapterView (Artist)
                 SpotifyContent artistContent = (SpotifyContent) adapterView.getItemAtPosition(position);
 
+                View viewFrame = getActivity().findViewById(R.id.container);
+                mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
+
                 // TODO: Amend code to use Bundle
                 // TODO: Single fragment code versus dual pane implementation
 
@@ -154,7 +165,8 @@ public class MainActivityFragment extends Fragment {
                      * Code snippet: Explicit intent - ArtistActivity
                      * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
                      *
-                     * Description: Initiate an activity for the selected artist
+                     * Description: In                    ArtistTopTenFragment fragment = new ArtistTopTenFragment();
+                    fragment.setArguments(arguments);itiate an activity for the selected artist
                      */
                     Intent intent = new Intent(getActivity(), ArtistActivity.class)
                             .putExtra("TwoPane", mTwoPane)
@@ -174,7 +186,7 @@ public class MainActivityFragment extends Fragment {
 
                     // TODO: Oh oh
                     getFragmentManager().beginTransaction()
-                            .add(R.id.container, fragment, ARTISTFRAGMENT_TAG)
+                            .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
                             .commit();
                 }
             }
@@ -320,44 +332,10 @@ public class MainActivityFragment extends Fragment {
             // If not artists retrieved display a message to the user
             if (mListSpotifyArtist.size()==0) {
                     displayFragmentMessage("No artists information found");
-
-//                Context context = getActivity();
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, "onPostExecute: No artists found", duration);
-//                toast.show();
             }
             else {
 
                 setSpotifyArtistInformation(result);
-
-//                for (Artist item: result.artists.items) {
-//                    SpotifyContent newArtist= null;
-//
-//                    try {
-//                        newArtist = new SpotifyContent(
-//                                item.name,
-//                                item.id,
-//                                "",
-//                                (item.images.get(0).url),
-//                                TAG_ARTIST);
-//                    } catch (Exception e) {
-//                        // No image will cause an exception
-//                        if (item.images.size() == 0) {
-//                            // No image found - deal with this in the customer adapter
-//                            newArtist = new SpotifyContent(
-//                                    item.name,
-//                                    item.id,
-//                                    "",
-//                                    "",
-//                                    TAG_ARTIST);
-//                        }
-//
-//                        Log.i (TAG_NAME, e.toString());
-//                    }
-//                    // Store the artists found
-//                    mSpotifyArtist.add(newArtist);
-//                }
 
                 // Update the listView
                 populateArtistListView();

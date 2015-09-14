@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 /*
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
      * Confirm whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    private boolean mTwoPane = false;
 
 
     /*
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if id.container is found - this means two panefragments (static and dynamic) are being displayed
+        // Check if id.container is found - this means two pane fragments (static and dynamic) are being displayed
         if (findViewById(R.id.container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -64,16 +65,20 @@ public class MainActivity extends AppCompatActivity {
 
             // TODO: Use a bundle to store mTwoPane state and pass through as argument
 
+//            Bundle arguments = new Bundle();
+//            arguments.putBoolean("TwoPane", mTwoPane);
+
+            ArtistTopTenFragment fragment = new ArtistTopTenFragment();
+//            fragment.setArguments(arguments);
+
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-            if (savedInstanceState == null) {
+//            if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ArtistTopTenFragment(), ARTISTFRAGMENT_TAG)
+                        .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
                         .commit();
-            }
-        } else {
-            mTwoPane = false;
+//            }
         }
 
     }
@@ -120,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
                         // Make a Async call to get new artist
                         fragment.fetchSpotifyContent(searchKeyword);
 
-                        if (mTwoPane) {
+                        if (findViewById(R.id.container) != null) { // mTwoPane == true
+//                        if (mTwoPane) {
                             ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
                                     getSupportFragmentManager().findFragmentById(R.id.container);
 
