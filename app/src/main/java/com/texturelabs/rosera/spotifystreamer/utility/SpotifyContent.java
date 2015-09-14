@@ -13,18 +13,24 @@ public class SpotifyContent implements Parcelable {
     private String  mSpotifyID;             // Artist ID
     private String  mSpotifyImageURI;       // Artist URI
     private String  mSpotifyAlbumTitle;     // Artist Album
-    private long    mSpotifyDuration;       // Track length
+    private String  mSpotifyPreviewURI;     // Track Preview URI
     private int     mFragmentTask;          // Task indicator
+//    private int     mTrackIndex;            // Track index for mediaplayer
     
 
-    public SpotifyContent(String mainTitle, String ID, String subTitle, String albumTitle, String imageURI, int Task_Type, long duration) {
+    public SpotifyContent(String mainTitle, String ID, String subTitle,
+                          String albumTitle, String imageURI, int Task_Type,
+                          String previewUri
+//                          int trackIndex
+    ) {
         this.mSpotifyTitle = mainTitle;
         this.mSpotifyID = ID;
         this.mSpotifySubTitle = subTitle;
         this.mSpotifyImageURI = imageURI;
         this.mSpotifyAlbumTitle = albumTitle;
         this.mFragmentTask = Task_Type;
-        this.mSpotifyDuration = duration;
+        this.mSpotifyPreviewURI = previewUri;
+//        this.mTrackIndex = trackIndex;
     }
 
     private SpotifyContent(Parcel in) {
@@ -34,7 +40,8 @@ public class SpotifyContent implements Parcelable {
         this.mSpotifyAlbumTitle = in.readString();
         this.mSpotifyImageURI = in.readString();
         this.mFragmentTask = in.readInt();
-        this.mSpotifyDuration = in.readLong();
+        this.mSpotifyPreviewURI = in.readString();
+//        this.mTrackIndex = in.readInt();
     }
 
     @Override
@@ -50,7 +57,8 @@ public class SpotifyContent implements Parcelable {
         dest.writeString(this.mSpotifyImageURI);
         dest.writeString(this.mSpotifyAlbumTitle);
         dest.writeInt(this.mFragmentTask);
-        dest.writeLong(this.mSpotifyDuration);
+        dest.writeString(this.mSpotifyPreviewURI);
+//        dest.writeInt(this.mTrackIndex);
     }
 
     public final Parcelable.Creator<SpotifyContent> CREATOR = new Parcelable.Creator<SpotifyContent>() {
@@ -84,5 +92,9 @@ public class SpotifyContent implements Parcelable {
 
     public int getFragmentTask() { return mFragmentTask; }
 
-    public long getArtistDuration() { return mSpotifyDuration; }
+    public String getArtistPreview() { return mSpotifyPreviewURI; }
+
+//    public void setArtistTrackIndex(int trackIndex) { mTrackIndex = trackIndex; }
+
+//    public int getArtistTrackIndex() {return mTrackIndex; }
 }

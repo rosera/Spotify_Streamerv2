@@ -49,7 +49,7 @@ public class ArtistTopTenFragment extends Fragment {
     boolean                                 mTitleParcelable = false;
 
     // TODO: Change to mechanism to determine whether two panes are required or not
-    private boolean                         mTwoPane = true;
+    private boolean                         mTwoPane = false;
 
     public ArtistTopTenFragment() {
     }
@@ -101,9 +101,12 @@ public class ArtistTopTenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
+
 // Review: pass fragment arguments rather than amend constructor signature
 
         // TODO: Amend to argument passing rather than intent structure
+        // Update the seekBar
 
         Intent intent = getActivity().getIntent();
         Bundle args = getArguments();
@@ -118,10 +121,11 @@ public class ArtistTopTenFragment extends Fragment {
             if (args.containsKey("TwoPane"))
                 this.mTwoPane = args.getBoolean("TwoPane");
         } else {
-            this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TEXT);
-            this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TITLE);
-//            this.mTwoPane = intent.getBooleanExtra("TwoPane", false);
+            this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TITLE);
+            this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TEXT);
+            this.mTwoPane = intent.getBooleanExtra("TwoPane", false);
         }
+
 
 // Review: pass fragment arguments rather than amend constructor signature
 
@@ -139,7 +143,6 @@ public class ArtistTopTenFragment extends Fragment {
             getActivity().setTitle("Top 10 Tracks");
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         mListViewTitle = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
@@ -153,11 +156,6 @@ public class ArtistTopTenFragment extends Fragment {
         mListViewTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
-//                Context context = getActivity();
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, "Intent for Task 2", duration);
-//                toast.show();
 
                 // Grab the selected text from the adapterView (Artist)
                 SpotifyContent trackContent = (SpotifyContent) adapterView.getItemAtPosition(position);
@@ -175,14 +173,12 @@ public class ArtistTopTenFragment extends Fragment {
                 // Grab the selected item information and pass to the dialog fragment
 
 
+                // Todo: Change to an tracks object
                 Bundle arguments = new Bundle();
 
-                // Dialog data
-                arguments.putString("Album", trackContent.getArtistAlbum());
-                arguments.putString("Name", mSpotifyArtist);
-                arguments.putString("ImageUrl", trackContent.getArtistURI());
-                arguments.putString("Title", trackContent.getArtistTitle());
-                arguments.putLong("Duration", trackContent.getArtistDuration());
+                arguments.putString("Artist", mSpotifyArtist);
+                arguments.putInt("Index", position);
+                arguments.putParcelableArrayList("Tracks", mSpotifyTracks);
 
                 FragmentManager fm = getFragmentManager();
                 MediaDialogFragment mediaFragment = new MediaDialogFragment();
@@ -270,7 +266,6 @@ public class ArtistTopTenFragment extends Fragment {
         }
 
         protected void onPostExecute(Tracks spotifyTracks) {
-
             Log.i("Debug:", "Download complete: result");
             SpotifyContent newTrack = null;
 
@@ -298,7 +293,7 @@ public class ArtistTopTenFragment extends Fragment {
                                 item.album.name,
                                 (item.album.images.get(0).url),
                                 TAG_TITLE,
-                                item.duration_ms);
+                                item.preview_url);
                     } catch (Exception e) {
 
                         // No image will cause an exception
@@ -311,7 +306,7 @@ public class ArtistTopTenFragment extends Fragment {
                                     item.album.name,
                                     "",
                                     TAG_TITLE,
-                                    item.duration_ms);
+                                    item.preview_url);
                         }
 
                         Log.i (TAG_NAME, item.name + " Error");

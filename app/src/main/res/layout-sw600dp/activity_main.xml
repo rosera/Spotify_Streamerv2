@@ -16,7 +16,7 @@
     -->
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/fragment_container"
         android:name="com.texturelabs.rosera.spotifystreamer.MainActivityFragment"
         tools:layout="@layout/fragment_main"
         android:layout_width="0dp"

@@ -25,6 +25,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.texturelabs.rosera.spotifystreamer.MainActivity" />
         </activity>
+        <service android:name=".media.AudioMediaService"/>
     </application>
 
 </manifest>

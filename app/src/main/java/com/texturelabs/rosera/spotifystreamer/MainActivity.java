@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if id.container is found - this means two panes (static and dynamic) are being displayed
+        // Check if id.container is found - this means two panefragments (static and dynamic) are being displayed
         if (findViewById(R.id.container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -113,23 +113,24 @@ public class MainActivity extends AppCompatActivity {
 
                     // Find the fragment instance
                     MainActivityFragment fragment = (MainActivityFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.fragment);
-
-                    ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.container);
+                            getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
                     // Confirm the fragment exists
                     if (fragment != null) {
                         // Make a Async call to get new artist
                         fragment.fetchSpotifyContent(searchKeyword);
 
-                        // Remove existing artist top ten data
-                        if (fragmentTopTen !=null)
-                            fragmentTopTen.removeTopTenTitles();
+                        if (mTwoPane) {
+                            ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
+                                    getSupportFragmentManager().findFragmentById(R.id.container);
+
+                            // Remove existing artist top ten data
+                            if (fragmentTopTen != null)
+                                fragmentTopTen.removeTopTenTitles();
+                        }
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
-
                 }
                 return false;
             }

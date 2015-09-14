@@ -36,11 +36,12 @@ public class ArtistActivity extends AppCompatActivity {
 //                        .addToBackStack(null)
                     .commit();
         }
+
     }
 
 
     /*********************************************
-     * Name: onCreateOptionsMenu
+     * Name: onCreateOptionsMenuNo view found for id
      * @param menu
      * @return
      * Description:

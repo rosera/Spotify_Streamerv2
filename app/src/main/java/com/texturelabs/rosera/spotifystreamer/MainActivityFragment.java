@@ -46,7 +46,7 @@ public class MainActivityFragment extends Fragment {
     private ListView                            mListViewArtist;
     private List<Artist>                        mListSpotifyArtist;
     private boolean                             mParcelable = false;
-    private boolean                             mTwoPane = true;
+    private boolean                             mTwoPane = false;
 
     /*
      * Name: MainActivityFragment
@@ -131,6 +131,9 @@ public class MainActivityFragment extends Fragment {
         if (!mParcelable)
             mSpotifyArtist = new ArrayList<>();
 
+        if (rootView.findViewById(R.id.container) != null)
+            mTwoPane = true;
+
         mSpotifyArtistAdapter = new CustomListAdapter(getActivity(), mSpotifyArtist);
         mListViewArtist.setAdapter(mSpotifyArtistAdapter);
 
@@ -155,7 +158,7 @@ public class MainActivityFragment extends Fragment {
                      */
                     Intent intent = new Intent(getActivity(), ArtistActivity.class)
                             .putExtra("TwoPane", mTwoPane)
-                            .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistSubTitle()) // Artist ID
+                            .putExtra(Intent.EXTRA_TITLE, artistContent.getArtistSubTitle()) // Artist ID
                             .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistTitle());   // Artist Name
 
                     startActivity(intent);
@@ -169,8 +172,9 @@ public class MainActivityFragment extends Fragment {
                     ArtistTopTenFragment fragment = new ArtistTopTenFragment();
                     fragment.setArguments(arguments);
 
+                    // TODO: Oh oh
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
+                            .add(R.id.container, fragment, ARTISTFRAGMENT_TAG)
                             .commit();
                 }
             }
@@ -233,7 +237,7 @@ public class MainActivityFragment extends Fragment {
                         "",
                         (item.images.get(0).url),
                         TAG_ARTIST,
-                        0L);
+                        "");
 
             } catch (Exception e) {
                 // No image will cause an exception
@@ -246,7 +250,7 @@ public class MainActivityFragment extends Fragment {
                             "",
                             "",
                             TAG_ARTIST,
-                            0L);
+                            "");
                 }
 
                 Log.i (TAG_NAME, e.toString());

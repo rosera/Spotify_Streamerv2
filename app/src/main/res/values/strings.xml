@@ -17,6 +17,9 @@
     <string name="spotify_streamer_artist">Artist</string>
     <string name="spotify_streamer_album">Album</string>
     <string name="spotify_streamer_start_time">0:00</string>
-    <string name="spotify_streamer_end_time">:0.30</string>
+    <string name="spotify_streamer_end_time">0.30</string>
     <string name="spotify_streamer_title">Title</string>
+    <string name="spotify_media_fforward">Fast Forward</string>
+    <string name="spotify_media_play">Play</string>
+    <string name="spotify_media_rewind">Rewind</string>
 </resources>
