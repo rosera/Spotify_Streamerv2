@@ -125,15 +125,15 @@ public class MainActivity extends AppCompatActivity {
                         // Make a Async call to get new artist
                         fragment.fetchSpotifyContent(searchKeyword);
 
-                        if (findViewById(R.id.dynamic_container) != null) { // mTwoPane == true
-//                        if (mTwoPane) {
-                            ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
-                                    getSupportFragmentManager().findFragmentById(R.id.dynamic_container);
-
-                            // Remove existing artist top ten data
-                            if (fragmentTopTen != null)
-                                fragmentTopTen.removeTopTenTitles();
-                        }
+//                        if (findViewById(R.id.dynamic_container) != null) { // mTwoPane == true
+////                        if (mTwoPane) {
+//                            ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
+//                                    getSupportFragmentManager().findFragmentById(R.id.dynamic_container);
+//
+//                            // Remove existing artist top ten data
+//                            if (fragmentTopTen != null)
+//                                fragmentTopTen.removeTopTenTitles();
+//                        }
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet), Toast.LENGTH_SHORT).show();

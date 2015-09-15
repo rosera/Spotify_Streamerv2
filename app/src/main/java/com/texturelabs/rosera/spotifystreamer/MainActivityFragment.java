@@ -42,7 +42,7 @@ public class MainActivityFragment extends Fragment {
     private static final int                TAG_ARTIST = 1;
 
     private ArrayAdapter<SpotifyContent>        mSpotifyArtistAdapter;
-    private static ArrayList<SpotifyContent>    mSpotifyArtist;
+    private ArrayList<SpotifyContent>           mSpotifyArtist;
     private ListView                            mListViewArtist;
     private List<Artist>                        mListSpotifyArtist;
     private boolean                             mParcelable = false;
@@ -103,9 +103,9 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
-        if (mParcelable)
+        if (mParcelable) {
             populateArtistListView();
+        }
     }
 
 
@@ -219,14 +219,6 @@ public class MainActivityFragment extends Fragment {
      */
 
     public void populateArtistListView() {
-//        mSpotifyArtistAdapter =
-//                new CustomListAdapter(this.getActivity(),
-//                        mSpotifyArtist);
-//
-//
-//        // Error - Today
-//        // Get a reference to the ListView, and attach this adapter to it.
-//        listView.setAdapter(mSpotifyArtistAdapter);
         mSpotifyArtistAdapter.notifyDataSetChanged();
     }
 

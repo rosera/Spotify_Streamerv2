@@ -45,8 +45,8 @@ public class ArtistTopTenFragment extends Fragment {
     private static final int                SINGLE_PANE = 0;
     private ArrayAdapter<SpotifyContent>    mSpotifyTrackAdapter;
     private ArrayList<SpotifyContent>       mSpotifyTracks;
-    String                                  mSpotifyArtist;
-    String                                  mSpotifyID;
+    private String                          mSpotifyArtist;
+    private String                          mSpotifyID;
     ListView                                mListViewTitle;
     boolean                                 mTitleParcelable = false;
 
@@ -209,10 +209,13 @@ public class ArtistTopTenFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        if (!mTitleParcelable)
+        if (mTitleParcelable) {
+            mSpotifyTrackAdapter.notifyDataSetChanged();
+        } else {
             // Execute the artist search
-        mSpotifyTracks.clear();
-            new TracksAsyncTask().execute(mSpotifyID);
+            if (mSpotifyID != null)
+                new TracksAsyncTask().execute(mSpotifyID);
+        }
     }
 
     /**
@@ -230,7 +233,8 @@ public class ArtistTopTenFragment extends Fragment {
 
     public void removeTopTenTitles() {
         // Clear the tracks
-        mSpotifyTracks.clear();
+        if (!mTitleParcelable)
+//            mSpotifyTracks.clear();
 //        mSpotifyTrackAdapter.notifyDataSetInvalidated();
         mSpotifyTrackAdapter.notifyDataSetChanged();
     }
