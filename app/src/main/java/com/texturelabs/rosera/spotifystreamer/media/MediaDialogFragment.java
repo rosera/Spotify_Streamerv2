@@ -327,7 +327,7 @@ public class MediaDialogFragment extends DialogFragment
                 //Toast.makeText(getActivity(), "play/pause button pressed", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.media_fforward:
-                if (mTrackIndex < 9) {
+                if (mTrackIndex < (mSpotifyTracks.size()-1)) {
                     mTrackIndex++;
 
                     SpotifyContent selectedTrack = mSpotifyTracks.get(mTrackIndex);

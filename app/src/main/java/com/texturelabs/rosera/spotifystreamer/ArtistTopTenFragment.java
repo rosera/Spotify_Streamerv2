@@ -41,6 +41,8 @@ import retrofit.RetrofitError;
 public class ArtistTopTenFragment extends Fragment {
     private static final String TAG_NAME = ArtistTopTenFragment.class.getSimpleName();
     private static final int                TAG_TITLE = 2;
+    private static final int                DUAL_PANE = 1;
+    private static final int                SINGLE_PANE = 0;
     private ArrayAdapter<SpotifyContent>    mSpotifyTrackAdapter;
     private ArrayList<SpotifyContent>       mSpotifyTracks;
     String                                  mSpotifyArtist;
@@ -49,7 +51,7 @@ public class ArtistTopTenFragment extends Fragment {
     boolean                                 mTitleParcelable = false;
 
     // TODO: Change to mechanism to determine whether two panes are required or not
-    private boolean                         mTwoPane = false;
+    boolean                         mTwoPane;
 
     public ArtistTopTenFragment() {
     }
@@ -101,6 +103,8 @@ public class ArtistTopTenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        int intPaneTest = DUAL_PANE;        // Assume dual_pane
+
         View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
 
 // Review: pass fragment arguments rather than amend constructor signature
@@ -118,30 +122,31 @@ public class ArtistTopTenFragment extends Fragment {
             if (args.containsKey("Name"))
                 this.mSpotifyArtist = args.getString("Name");
 
-            if (args.containsKey("TwoPane"))
-                this.mTwoPane = args.getBoolean("TwoPane");
+//            mTwoPane = true;
+            intPaneTest = DUAL_PANE;
         } else {
             this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TITLE);
             this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TEXT);
-            this.mTwoPane = intent.getBooleanExtra("TwoPane", false);
+            if (this.mSpotifyID != null)
+                intPaneTest = SINGLE_PANE;
         }
 
 
 // Review: pass fragment arguments rather than amend constructor signature
-        View viewFrame = getActivity().findViewById(R.id.container);
-        mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
+//        View viewFrame = getActivity().findViewById(R.id.dynamic_container);
+//        mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
 
         // TODO: Amend the code for mTwoPane
-        if (!mTwoPane) {
+        if (intPaneTest == SINGLE_PANE) {
             // Change the title - TODO: (add string resource)
             // Amend the Fragment title
             ActionBar actionBar = getActivity().getActionBar();
             try {
                 actionBar.setSubtitle(mSpotifyArtist);
+
             } catch (NullPointerException e) {
                 Log.i(TAG_NAME, "Exception:" + e.getMessage());
             }
-
             getActivity().setTitle("Top 10 Tracks");
         }
 

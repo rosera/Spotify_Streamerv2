@@ -153,9 +153,12 @@ public class MainActivityFragment extends Fragment {
                 // Grab the selected text from the adapterView (Artist)
                 SpotifyContent artistContent = (SpotifyContent) adapterView.getItemAtPosition(position);
 
-                View viewFrame = getActivity().findViewById(R.id.container);
-                mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
-
+                View viewFrame = getActivity().findViewById(R.id.dynamic_container);
+                try {
+                    mTwoPane = viewFrame != null && viewFrame.getVisibility() == View.VISIBLE;
+                } catch (IllegalArgumentException ex) {
+                    ex.printStackTrace();
+                }
                 // TODO: Amend code to use Bundle
                 // TODO: Single fragment code versus dual pane implementation
 
@@ -169,7 +172,7 @@ public class MainActivityFragment extends Fragment {
                     fragment.setArguments(arguments);itiate an activity for the selected artist
                      */
                     Intent intent = new Intent(getActivity(), ArtistActivity.class)
-                            .putExtra("TwoPane", mTwoPane)
+                            .putExtra("TwoPane", 0)
                             .putExtra(Intent.EXTRA_TITLE, artistContent.getArtistSubTitle()) // Artist ID
                             .putExtra(Intent.EXTRA_TEXT, artistContent.getArtistTitle());   // Artist Name
 
@@ -179,14 +182,14 @@ public class MainActivityFragment extends Fragment {
 
                     arguments.putString("ArtistID", artistContent.getArtistSubTitle());
                     arguments.putString("Name", artistContent.getArtistTitle());
-                    arguments.putBoolean("TwoPane", mTwoPane);
+                    arguments.putInt("TwoPane", 1);
 
                     ArtistTopTenFragment fragment = new ArtistTopTenFragment();
                     fragment.setArguments(arguments);
 
                     // TODO: Oh oh
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
+                            .replace(R.id.dynamic_container, fragment, ARTISTFRAGMENT_TAG)
                             .commit();
                 }
             }

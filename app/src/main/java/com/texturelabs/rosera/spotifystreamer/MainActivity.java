@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Check if id.container is found - this means two pane fragments (static and dynamic) are being displayed
-        if (findViewById(R.id.container) != null) {
+        if (findViewById(R.id.dynamic_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
             // in two-pane mode.
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             // fragment transaction.
 //            if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment, ARTISTFRAGMENT_TAG)
+                        .replace(R.id.dynamic_container, fragment, ARTISTFRAGMENT_TAG)
                         .commit();
 //            }
         }
@@ -125,10 +125,10 @@ public class MainActivity extends AppCompatActivity {
                         // Make a Async call to get new artist
                         fragment.fetchSpotifyContent(searchKeyword);
 
-                        if (findViewById(R.id.container) != null) { // mTwoPane == true
+                        if (findViewById(R.id.dynamic_container) != null) { // mTwoPane == true
 //                        if (mTwoPane) {
                             ArtistTopTenFragment fragmentTopTen = (ArtistTopTenFragment)
-                                    getSupportFragmentManager().findFragmentById(R.id.container);
+                                    getSupportFragmentManager().findFragmentById(R.id.dynamic_container);
 
                             // Remove existing artist top ten data
                             if (fragmentTopTen != null)
