@@ -39,19 +39,14 @@ import retrofit.RetrofitError;
  */
 
 public class ArtistTopTenFragment extends Fragment {
-    private static final String TAG_NAME = ArtistTopTenFragment.class.getSimpleName();
+    private final String TAG_NAME = ArtistTopTenFragment.class.getSimpleName();
     private static final int                TAG_TITLE = 2;
-    private static final int                DUAL_PANE = 1;
-    private static final int                SINGLE_PANE = 0;
-    private ArrayAdapter<SpotifyContent>    mSpotifyTrackAdapter;
-    private ArrayList<SpotifyContent>       mSpotifyTracks;
-    private String                          mSpotifyArtist;
-    private String                          mSpotifyID;
-    ListView                                mListViewTitle;
-    boolean                                 mTitleParcelable = false;
+    private ArrayAdapter<SpotifyContent>    mTrackAdapter;
+    private ArrayList<SpotifyContent>       mSpotifyTracks = new ArrayList<>();
 
-    // TODO: Change to mechanism to determine whether two panes are required or not
-    boolean                         mTwoPane;
+    private String                          mSpotifyID;
+    private String                          mArtistName;
+    private boolean                         mTitleParcelable = false;
 
     public ArtistTopTenFragment() {
     }
@@ -68,10 +63,12 @@ public class ArtistTopTenFragment extends Fragment {
 
         // Grab parcelable information
         if (savedInstanceState == null || !savedInstanceState.containsKey("Tracks")) {
-            mTitleParcelable = false;
+            if (mSpotifyTracks != null)
+                mTitleParcelable = true;
         }
         else {
             mSpotifyTracks = savedInstanceState.getParcelableArrayList("Tracks");
+            mSpotifyID = savedInstanceState.getString("ID");
             mTitleParcelable = true;
         }
     }
@@ -87,6 +84,23 @@ public class ArtistTopTenFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("Tracks", mSpotifyTracks);
+        outState.putString("ID", mSpotifyID);
+    }
+
+
+    /***************
+     * Name: onActivityCreated
+     * @param savedInstanceState
+     * Description:
+     */
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (mSpotifyID != null) {
+            new TracksAsyncTask().execute(mSpotifyID);
+        }
     }
 
 
@@ -102,143 +116,66 @@ public class ArtistTopTenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        int intPaneTest = DUAL_PANE;        // Assume dual_pane
+        Log.i("Debug:", "onCreateView: ArtistTopTenFragment");
+        ListView listViewTitle;
+        String  strSpotifyArtist = "";
 
         View rootView = inflater.inflate(R.layout.fragment_artist_top_ten , container, false);
 
-// Review: pass fragment arguments rather than amend constructor signature
-
-        // TODO: Amend to argument passing rather than intent structure
-        // Update the seekBar
-
-        Intent intent = getActivity().getIntent();
         Bundle args = getArguments();
 
         if (args != null){
             if (args.containsKey("ArtistID"))
-                this.mSpotifyID = args.getString("ArtistID");
+                mSpotifyID = args.getString("ArtistID");
 
             if (args.containsKey("Name"))
-                this.mSpotifyArtist = args.getString("Name");
-
-//            mTwoPane = true;
-            intPaneTest = DUAL_PANE;
-        } else {
-            this.mSpotifyID = intent.getStringExtra(Intent.EXTRA_TITLE);
-            this.mSpotifyArtist = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if (this.mSpotifyID != null)
-                intPaneTest = SINGLE_PANE;
+                mArtistName = args.getString("Name");
         }
 
-
-// Review: pass fragment arguments rather than amend constructor signature
-//        View viewFrame = getActivity().findViewById(R.id.dynamic_container);
-//        mTwoPane = viewFrame !=null && viewFrame.getVisibility() == View.VISIBLE;
-
-        // TODO: Amend the code for mTwoPane
-        if (intPaneTest == SINGLE_PANE) {
-            // Change the title - TODO: (add string resource)
-            // Amend the Fragment title
-            ActionBar actionBar = getActivity().getActionBar();
-            try {
-                actionBar.setSubtitle(mSpotifyArtist);
-
-            } catch (NullPointerException e) {
-                Log.i(TAG_NAME, "Exception:" + e.getMessage());
-            }
-            getActivity().setTitle("Top 10 Tracks");
-        }
-
+//        mSpotifyTracks = new ArrayList<>();
+        mTrackAdapter = new CustomListAdapter(getActivity(), mSpotifyTracks);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        mListViewTitle = (ListView) rootView.findViewById(R.id.listViewArtistTopTenTracks);
+        listViewTitle = (ListView) rootView.findViewById(R.id.listViewTopTen);
+        listViewTitle.setAdapter(mTrackAdapter);
 
-        if (!mTitleParcelable)
-            this.mSpotifyTracks = new ArrayList<>();
-        mSpotifyTrackAdapter = new CustomListAdapter(getActivity(), mSpotifyTracks);
-        mListViewTitle.setAdapter(mSpotifyTrackAdapter);
+        if (mSpotifyID != null) {
 
-        // Add click behaviour for the title artist listview
-        mListViewTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
+            // Add click behaviour for the title artist listview
+            final String finalStrSpotifyArtist = strSpotifyArtist;
+            listViewTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                // Grab the selected text from the adapterView (Artist)
-                SpotifyContent trackContent = (SpotifyContent) adapterView.getItemAtPosition(position);
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, final View view, int position, long id) {
+                    Log.i("Debug:", "onItemClick: ArtistTopTenFragment");
 
+                    /**
+                     * Code snippet: Explicit intent - ArtistActivity
+                     * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
+                     *
+                     * Description: Initiate an activity for the selected artist
+                     */
 
+                    // Grab the selected item information and pass to the dialog fragment
 
-                /**
-                 * Code snippet: Explicit intent - ArtistActivity
-                 * http://developer.android.com/guide/components/intents-filters.html#ExampleExplicit
-                 *
-                 * Description: Initiate an activity for the selected artist
-                 */
+                    // Todo: Change to an tracks object
+                    Bundle arguments = new Bundle();
 
+                    arguments.putString("Artist", finalStrSpotifyArtist);
+                    arguments.putInt("Index", position);
+                    arguments.putParcelableArrayList("Tracks", mSpotifyTracks);
 
-                // Grab the selected item information and pass to the dialog fragment
-
-
-                // Todo: Change to an tracks object
-                Bundle arguments = new Bundle();
-
-                arguments.putString("Artist", mSpotifyArtist);
-                arguments.putInt("Index", position);
-                arguments.putParcelableArrayList("Tracks", mSpotifyTracks);
-
-                FragmentManager fm = getFragmentManager();
-                MediaDialogFragment mediaFragment = new MediaDialogFragment();
-                mediaFragment.setArguments(arguments);
-                mediaFragment.show(fm, "dialog");
-            }
-        });
+                    FragmentManager fm = getFragmentManager();
+                    MediaDialogFragment mediaFragment = new MediaDialogFragment();
+                    mediaFragment.setArguments(arguments);
+                    mediaFragment.show(fm, "dialog");
+                }
+            });
+        }
 
         // Inflate the layout for this fragment
         return rootView;
     }
-
-
-    /***************
-     * Name: onActivityCreated
-     * @param savedInstanceState
-     * Description:
-     */
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (mTitleParcelable) {
-            mSpotifyTrackAdapter.notifyDataSetChanged();
-        } else {
-            // Execute the artist search
-            if (mSpotifyID != null)
-                new TracksAsyncTask().execute(mSpotifyID);
-        }
-    }
-
-    /**
-     * Name: populateArtistListView
-     * Callback on postExecute - ArtistAsyncTask
-     * Add the resultant data to the listView control
-     * If no data returned - output a message
-     * Otherwise - populate the ListView with the Artists found
-     */
-
-    public void populateTrackListView() {
-
-        mSpotifyTrackAdapter.notifyDataSetChanged();
-    }
-
-    public void removeTopTenTitles() {
-        // Clear the tracks
-        if (!mTitleParcelable)
-//            mSpotifyTracks.clear();
-//        mSpotifyTrackAdapter.notifyDataSetInvalidated();
-        mSpotifyTrackAdapter.notifyDataSetChanged();
-    }
-
 
     /**
      * Name: ArtistAsyncTask
@@ -251,10 +188,11 @@ public class ArtistTopTenFragment extends Fragment {
         SpotifyApi api;
         SpotifyService spotifyService;
         Tracks spotifyContent = (Tracks)null;
+        String  mSearchArtist;
 
         @Override
         protected Tracks doInBackground(String... params) {
-            String searchArtist = params[0];
+            mSearchArtist = params[0];
 
             api = new SpotifyApi();
             spotifyService = api.getService();
@@ -264,7 +202,7 @@ public class ArtistTopTenFragment extends Fragment {
                 Map<String, Object> countryCode= new HashMap<>();
                 countryCode.put("country", Locale.getDefault().getCountry());
 
-                spotifyContent = spotifyService.getArtistTopTrack(searchArtist, countryCode);
+                spotifyContent = spotifyService.getArtistTopTrack(mSearchArtist, countryCode);
             }
             catch (RetrofitError ex) {
                 Log.i(TAG_NAME, ex.toString());
@@ -280,56 +218,62 @@ public class ArtistTopTenFragment extends Fragment {
         protected void onPostExecute(Tracks spotifyTracks) {
             Log.i("Debug:", "Download complete: result");
 
+            // Clear the tracks
+            mSpotifyTracks.clear();
 
-            if (spotifyTracks != null) {
-                // Clear the tracks
-                mSpotifyTracks.clear();
-
-                for (Track item: spotifyTracks.tracks) {
-                    SpotifyContent newTrack = null;
-
-                    try {
-                        newTrack = new SpotifyContent(
-                                item.name,
-                                item.id,
-                                item.id,
-                                item.album.name,
-                                (item.album.images.get(0).url),
-                                TAG_TITLE,
-                                item.preview_url);
-                    } catch (Exception e) {
-
-                        // No image will cause an exception
-                        if (item.album.images.size() == 0) {
-                            // No image found - deal with this in the customer adapter
-                            newTrack = new SpotifyContent(
-                                    item.name,
-                                    item.id,
-                                    item.id,
-                                    item.album.name,
-                                    "",
-                                    TAG_TITLE,
-                                    item.preview_url);
-                        }
-
-                        Log.i (TAG_NAME, item.name + " Error");
-                    }
-
-                    // Store the artists found
-                    mSpotifyTracks.add(newTrack);
-                }
-
-                if (mSpotifyTracks.size() == 0) {
-                    Context context = getActivity();
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, "No tracks found for " + mSpotifyArtist.toString(), duration);
-                    toast.show();
-                }
-                else {
-                    mSpotifyTrackAdapter.notifyDataSetChanged();
-                }
+            if (spotifyTracks.tracks.size() == 0) {
+                displayFragmentMessage("No tracks found for " + mArtistName.toString());
             }
+            else {
+                setTrackInformation(spotifyTracks);
+                mTrackAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void displayFragmentMessage(String msg) {
+        Context context = getActivity();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
+    }
+
+
+    public void setTrackInformation (Tracks spotifyTracks) {
+
+        for (Track item: spotifyTracks.tracks) {
+            SpotifyContent newTrack = null;
+
+            try {
+                newTrack = new SpotifyContent(
+                        item.name,
+                        item.id,
+                        item.id,
+                        item.album.name,
+                        (item.album.images.get(0).url),
+                        TAG_TITLE,
+                        item.preview_url);
+            } catch (Exception e) {
+
+                // No image will cause an exception
+                if (item.album.images.size() == 0) {
+                    // No image found - deal with this in the customer adapter
+                    newTrack = new SpotifyContent(
+                            item.name,
+                            item.id,
+                            item.id,
+                            item.album.name,
+                            "",
+                            TAG_TITLE,
+                            item.preview_url);
+                }
+
+                Log.i (TAG_NAME, item.name + " Error");
+            }
+
+            // Store the artists found
+            mSpotifyTracks.add(newTrack);
         }
     }
 }

@@ -4,7 +4,11 @@
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:id="@+id/list_item_spotify_artist">
+    android:id="@+id/list_item_spotify_artist"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
 
     <ImageView
         android:layout_width="@dimen/SpotifyStreamImageWidth"
@@ -12,12 +16,16 @@
         android:src="@drawable/blank_cd"
         android:id="@+id/imageViewArtist"
         android:contentDescription="@string/spotify_stream_imageview_artist"
-        android:layout_margin="@dimen/SpotifyStreamImageMarginAll" />
+        android:layout_margin="@dimen/SpotifyStreamImageMarginAll"
+        android:focusable="false"
+        android:clickable="false"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/spotify_streamer_artist_tagline"
         android:id="@+id/textViewArtist"
-        android:paddingTop="@dimen/SpotifyStreamTextViewPaddingTop" />
+        android:paddingTop="@dimen/SpotifyStreamTextViewPaddingTop"
+        android:focusable="false"
+        android:clickable="false"/>
 </LinearLayout>

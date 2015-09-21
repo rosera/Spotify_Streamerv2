@@ -4,38 +4,47 @@
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:id="@+id/list_item_top_ten_artist">
+    android:id="@+id/list_item_top_ten_artist"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
 
     <ImageView
         android:layout_width="@dimen/SpotifyStreamImageWidth"
         android:layout_height="@dimen/SpotifyStreamImageHeight"
+        android:src="@drawable/blank_cd"
         android:id="@+id/imageViewTopTenArtist"
         android:contentDescription="@string/spotify_streamer_artist_image"
         android:layout_margin="@dimen/SpotifyStreamImageMarginAll"
-        android:visibility="visible" />
+        android:focusable="false"
+        android:clickable="false"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:focusable="false"
+        android:clickable="false">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/spotify_streamer_artist_track"
             android:id="@+id/textViewTopTenArtist"
-            android:visibility="visible"
             android:layout_marginTop="@dimen/SpotifyStreamTextViewPaddingTop"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:focusable="false"
+            android:clickable="false"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/spotify_streamer_artist_album"
             android:id="@+id/textViewTopTenAlbum"
-            android:visibility="visible"
-            android:layout_marginTop="@dimen/SpotifyStreamTextViewPaddingTop" />
+            android:layout_marginTop="@dimen/SpotifyStreamTextViewPaddingTop"
+            android:focusable="false"
+            android:clickable="false"/>
     </LinearLayout>
 
 </LinearLayout>

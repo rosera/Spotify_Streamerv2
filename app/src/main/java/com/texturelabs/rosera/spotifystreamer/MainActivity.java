@@ -10,19 +10,14 @@ package com.texturelabs.rosera.spotifystreamer;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 /*
@@ -32,17 +27,13 @@ import android.widget.Toast;
  *
  */
 public class MainActivity extends AppCompatActivity {
-
-//    private final  String TAG_FRAGMENT          = "ArtistFragment";
-    private final  String ARTISTFRAGMENT_TAG    = "ArtistFragment";
-
+    private final String TAG_NAME = MainActivity.class.getSimpleName();
     /*
      * Project 2 - Amend UI for dual pane
      * Confirm whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane = false;
-
+    private boolean mTwoPane;
 
     /*
      * Name: onCreate
@@ -68,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 //            Bundle arguments = new Bundle();
 //            arguments.putBoolean("TwoPane", mTwoPane);
 
-            ArtistTopTenFragment fragment = new ArtistTopTenFragment();
+//            ArtistTopTenFragment fragment = new ArtistTopTenFragment();
 //            fragment.setArguments(arguments);
 
             // In two-pane mode, show the detail view in this activity by
@@ -76,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             // fragment transaction.
 //            if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.dynamic_container, fragment, ARTISTFRAGMENT_TAG)
+                        .add(R.id.dynamic_container, new ArtistTopTenFragment(), TAG_NAME)
                         .commit();
 //            }
         }
